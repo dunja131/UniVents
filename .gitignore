@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore H2 database files
+data/
+# Ignore IDE and build folders
+*.iml
+/.idea/
+/target/

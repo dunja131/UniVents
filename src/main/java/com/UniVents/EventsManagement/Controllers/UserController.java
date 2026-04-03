@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
        @GetMapping("/hello")    
     public String hello() {
-        return "wooww World!";
+        return "wooow World!";
     }
  
 }
@@ -20,4 +20,5 @@ public class UserController {
 // downloaded extension pack for java + jdk extensions so it imports packages and functions as an IDE (vscode is just text editor)
 // ./mvnw spring-boot:run to run app 
 // go to http://localhost:8080 to access.
-// added spring-boot-devtools in dependencies so can just reload page and it will update changes (otherwise have to end run command and repaste it.)  
+// added spring-boot-devtools in dependencies so can just reload page and it will update changes (otherwise have to end run command and repaste it.) 
+// ctrl + c to end a command in terminal.  
