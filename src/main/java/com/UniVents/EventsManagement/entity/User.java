@@ -17,11 +17,12 @@ private Long userId;
 private String firstName;
 
 
-@Column(name = "last_name". nullable = false, length = 100)
+@Column(name = "last_name", nullable = false, length = 100)
 private String lastName;
 
-@Column(name = "email_address", nullable = false, unique = true, length = 100")
+@Column(name = "email_address", nullable = false, unique = true, length = 100)
 private String email; 
 
-@Column(name = "password_has"h, nullable = false, columnDefinition = "TEXT")
+@Column(name = "password_hash", nullable = false, columnDefinition = "TEXT")
+private String passwordHash;
 }
