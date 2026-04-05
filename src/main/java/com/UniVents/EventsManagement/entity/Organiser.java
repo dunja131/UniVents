@@ -1,6 +1,7 @@
 package com.UniVents.EventsManagement.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "organisers")
@@ -16,8 +17,4 @@ private String organiserName;
 
 @Column(name = "organiser_email", nullable = false, unique = true)
 private String organiserEmail;
-
-
-
-
 }
