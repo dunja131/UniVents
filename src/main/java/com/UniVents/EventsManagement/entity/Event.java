@@ -1,6 +1,7 @@
 package com.UniVents.EventsManagement.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "events")
@@ -16,7 +17,13 @@ public class Events {
     private String description;
 
    @Column(name = "location", nullable = false) 
-    private String location;
+    private String location; 
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
+
+    private LocalDateTime createdAt;
 
 
 }
