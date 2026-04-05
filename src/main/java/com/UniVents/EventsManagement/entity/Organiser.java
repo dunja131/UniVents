@@ -20,4 +20,9 @@ private String organiserEmail;
 
 @OneToMany(mappedBy = "organiser")
 private List<Event> events;
+
+public Long getOrganiserId() {return organiserId;}
+public String getOrganiserName() {return organiserName;}
+public String getOrganisersEmail() {return organiserEmail;}
+public List<Event> getEvents() {return events;}
 }
