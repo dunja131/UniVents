@@ -11,4 +11,9 @@ public class Rsvp{
 @Column(name = "rsvp_id")
 private Long rsvpId;
 
+
+@ManyToOne //many RSVPs belong to One User
+@JoinColumn(name = "user_id", nullable=false)
+private User user;
+
 }
