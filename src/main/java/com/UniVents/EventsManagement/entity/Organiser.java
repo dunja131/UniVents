@@ -12,6 +12,9 @@ public class Organisers {
 private Long organiserId;
 
 
+private Long organiserName;
+
+private Long organiserEmail;
 
 
 
