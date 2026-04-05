@@ -11,10 +11,11 @@ public class Organisers {
 @Column(name = "organiser_id")
 private Long organiserId;
 
+@Column(name = "organiser_name", nullable = false)
+private String organiserName;
 
-private Long organiserName;
-
-private Long organiserEmail;
+@Column(name = "organiser_email", nullable = false, unique = true)
+private String organiserEmail;
 
 
 
