@@ -23,4 +23,13 @@ private String email;
 
 @Column(name = "password_hash", nullable = false, columnDefinition = "TEXT")
 private String passwordHash;
+
+    public Long getUserId() { return userId; }
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public String getEmail() { return email; }
+    public String getPasswordHash() { return passwordHash; }
+
+
+
 }
