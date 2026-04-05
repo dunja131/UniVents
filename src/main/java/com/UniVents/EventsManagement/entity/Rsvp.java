@@ -16,4 +16,8 @@ private Long rsvpId;
 @JoinColumn(name = "user_id", nullable=false)
 private User user;
 
+@ManyToOne //many RSVPs belong to One Event
+@JoinColumn(name = "event_id", nullable = false)
+private Event event;
+
 }
