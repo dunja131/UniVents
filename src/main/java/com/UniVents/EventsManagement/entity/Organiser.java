@@ -17,4 +17,7 @@ private String organiserName;
 
 @Column(name = "organiser_email", nullable = false, unique = true)
 private String organiserEmail;
+
+@OneToMany(mappedBy = "organiser")
+private List<Event> events;
 }
