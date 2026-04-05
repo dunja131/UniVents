@@ -28,5 +28,11 @@ public class Event {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @ManyToOne //links many events to one organiser 
+    @JoinColumn(name = "organiser_id", nullable = false)
+    private Organiser organiser;
+
+
+
 
 }
