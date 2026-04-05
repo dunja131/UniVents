@@ -33,7 +33,17 @@ public class Event {
     private Organiser organiser;
 
 
+   public Long getEventId() {return eventId;}
 
+public String getEventName() {
+    return eventName;
+}
 
+public String getDescription() {return description;}
+public String getLocation() {return location;}
+public LocalDateTime getStartTime() {return startTime;}
+public LocalDateTime getEndTime() {return endTime;}
+public LocalDateTime getCreatedAt() {return createdAt;}
+public Organiser getOrganiser() {return organiser;}
 
 }
