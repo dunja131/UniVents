@@ -1,6 +1,7 @@
 package com.UniVents.EventsManagement.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rsvps")
@@ -11,7 +12,6 @@ public class Rsvp{
 @Column(name = "rsvp_id")
 private Long rsvpId;
 
-
 @ManyToOne //many RSVPs belong to One User
 @JoinColumn(name = "user_id", nullable=false)
 private User user;
@@ -20,4 +20,6 @@ private User user;
 @JoinColumn(name = "event_id", nullable = false)
 private Event event;
 
+@Column(name = "status", nullable = false)
+private String status;
 }
