@@ -20,13 +20,17 @@ public class RsvpController{
     @Autowired 
     private RsvpRepository rsvpRepository; //connects to the database
 
-    //POST - create RSVP 
-
-    //GET /rsvps/event/{eventId} - get all RSVPs for an event
-    @GetMapping("/event/{eventId}")
-    public List<Rsvp> getRsvpsByEvent(@PathVariable Long eventId){
-        return rsvpRepository.findByEvent_EventId(eventId);
-    }
+    //     // POST /rsvps - create RSVP
+    // @PostMapping
+    // public ResponseEntity<Rsvp> createRsvp(@RequestBody Rsvp rsvp) {
+    //     Rsvp saved = rsvpRepository.save(rsvp);
+    //     return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    // }
+    // //GET /rsvps/event/{eventId} - get all RSVPs for an event
+    // @GetMapping("/event/{eventId}")
+    // public List<Rsvp> getRsvpsByEvent(@PathVariable Long eventId){
+    //     return rsvpRepository.findByEvent_EventId(eventId);
+    // }
 
     //GET - get RSVPs by user - how many rsvps a user has 
 
