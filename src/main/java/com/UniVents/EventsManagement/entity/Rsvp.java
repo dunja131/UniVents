@@ -22,4 +22,10 @@ private Event event;
 
 @Column(name = "status", nullable = false)
 private String status;
+
+public Long getRsvpId() {return rsvpId;}
+public User getUser() {return user;}
+public Event getEvent() {return event;}
+public String getStatus() {return status;}
+
 }
