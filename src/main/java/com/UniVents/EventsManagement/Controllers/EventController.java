@@ -17,10 +17,14 @@ public class EventController{
 @Autowired 
 private EventRepository eventRepository; //connects to the database
 
-
     @GetMapping
     public List<Event> getAllEvents() {
     return eventRepository.findAll();
+    }
+
+    @PostMapping
+    public Event createEvent(@RequestBody Event event){
+        return eventRepository.save(event);
     }
 
 //what i need to add
