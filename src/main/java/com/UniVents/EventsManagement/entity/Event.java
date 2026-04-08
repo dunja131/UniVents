@@ -2,6 +2,7 @@ package com.UniVents.EventsManagement.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "events")
@@ -30,6 +31,7 @@ public class Event {
 
     @ManyToOne //links many events to one organiser 
     @JoinColumn(name = "organiser_id", nullable = false)
+    @JsonBackReference
     private Organiser organiser;
 
 

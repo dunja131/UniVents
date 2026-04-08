@@ -3,6 +3,8 @@ package com.UniVents.EventsManagement.entity;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "organisers")
 public class Organiser {
@@ -19,6 +21,7 @@ private String organiserName;
 private String organiserEmail;
 
 @OneToMany(mappedBy = "organiser")
+@JsonManagedReference
 private List<Event> events;
 
 public Long getOrganiserId() {return organiserId;}
