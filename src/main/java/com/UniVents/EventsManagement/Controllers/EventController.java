@@ -39,9 +39,9 @@ private EventRepository eventRepository; //connects to the database
         return eventRepository.save(event);
     }
 
-// PUT /events/{id} - update event (organisers)
-@PutMapping("/{id}")
-public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event updatedEvent){
+    // PUT /events/{id} - update event (organisers)
+    @PutMapping("/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event updatedEvent){
 
       // look for the event in the database
     Optional<Event> existingEvent = eventRepository.findById(id); //using Optional to safely wrap it
@@ -65,6 +65,18 @@ public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Eve
     // save and return it
     return ResponseEntity.ok(eventRepository.save(event));
 }
+
+// PUT /events/{id} - update event (organisers)
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> deleteEvent(@PathVariable Long id){
+
+ if (!eventRepository.existsById(id)) {
+        return ResponseEntity.notFound().build(); //return status code with no data
+    }
+    eventRepository.deleteById(id);
+    return ResponseEntity.noContent().build(); //return 204 successful deletion
+}
+
 
 
 }
