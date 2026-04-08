@@ -35,17 +35,19 @@ public class Event {
     private Organiser organiser;
 
 
-   public Long getEventId() {return eventId;}
-
-public String getEventName() {
-    return eventName;
-}
-
+public Long getEventId() {return eventId;}
+public String getEventName() {return eventName;}
 public String getDescription() {return description;}
 public String getLocation() {return location;}
 public LocalDateTime getStartTime() {return startTime;}
 public LocalDateTime getEndTime() {return endTime;}
 public LocalDateTime getCreatedAt() {return createdAt;}
 public Organiser getOrganiser() {return organiser;}
+
+public void setEventName(String eventName) {this.eventName = eventName;}
+public void setDescription(String description) {this.description = description;}
+public void setLocation(String location) {this.location = location;}
+public void setStartTime(LocalDateTime startTime) {this.startTime = startTime;}
+public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
 
 }

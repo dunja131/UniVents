@@ -26,7 +26,7 @@ private EventRepository eventRepository; //connects to the database
     return eventRepository.findAll();
     }
 
-//GET /event
+//GET /one event
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable Long id){
         Optional<Event> event = eventRepository.findById(id);
@@ -39,9 +39,32 @@ private EventRepository eventRepository; //connects to the database
         return eventRepository.save(event);
     }
 
-//what i need to add
-//- get one event
-//-create event - for organisers
-// update events - for organisers 
-// delete an event = for organisers
+// PUT /events/{id} - update event (organisers)
+@PutMapping("/{id}")
+public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event updatedEvent){
+
+      // look for the event in the database
+    Optional<Event> existingEvent = eventRepository.findById(id); //using Optional to safely wrap it
+
+    // if not found, return 404
+    if (existingEvent.isEmpty()) {
+        return ResponseEntity.notFound().build();
+    }
+
+     // get the actual event out of the Optional
+    Event event = existingEvent.get();
+
+
+    // overwrite the old data with the new data
+    event.setEventName(updatedEvent.getEventName());
+    event.setDescription(updatedEvent.getDescription());
+    event.setLocation(updatedEvent.getLocation());
+    event.setStartTime(updatedEvent.getStartTime());
+    event.setEndTime(updatedEvent.getEndTime());
+
+    // save and return it
+    return ResponseEntity.ok(eventRepository.save(event));
+}
+
+
 }
