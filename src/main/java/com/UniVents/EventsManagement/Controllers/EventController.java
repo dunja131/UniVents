@@ -77,9 +77,8 @@ public ResponseEntity<Void> deleteEvent(@PathVariable Long id){
     return ResponseEntity.noContent().build(); //return 204 successful deletion
 }
 
-//adding this comment for testing purposes - hopefully you can see this Sakshi hehe
+
 
 }
 
 
-// cann u see my comment kimi

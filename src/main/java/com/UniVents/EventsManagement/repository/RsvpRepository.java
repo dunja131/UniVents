@@ -11,6 +11,8 @@ public interface RsvpRepository extends JpaRepository<Rsvp, Long> {
 
     List<Rsvp> findByEvent_EventId(Long eventId);
 
+    List<Rsvp> findByUser_UserId(Long userId);
+
 }
     
 

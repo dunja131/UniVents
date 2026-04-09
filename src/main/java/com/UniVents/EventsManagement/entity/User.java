@@ -1,5 +1,7 @@
 package com.UniVents.EventsManagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -21,6 +23,7 @@ private String lastName;
 @Column(name = "email_address", nullable = false, unique = true, length = 100)
 private String email; 
 
+@JsonIgnore
 @Column(name = "password_hash", nullable = false, columnDefinition = "TEXT")
 private String passwordHash;
 

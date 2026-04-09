@@ -20,7 +20,7 @@ public class RsvpController{
     @Autowired 
     private RsvpRepository rsvpRepository; //connects to the database
 
-        // POST /rsvps - create RSVP
+    // POST /rsvps - create RSVP
     @PostMapping
     public ResponseEntity<Rsvp> createRsvp(@RequestBody Rsvp rsvp) {
         Rsvp saved = rsvpRepository.save(rsvp);
@@ -32,10 +32,15 @@ public class RsvpController{
         return rsvpRepository.findByEvent_EventId(eventId);
     }
 
-    // GET - get RSVPs by user - how many rsvps a user has 
+    // GET /rsvps/user/{userId} - get all RSVPs for a user
+    @GetMapping("/user/{userId}")
+    public List<Rsvp> getRsvpsByUser(@PathVariable Long userId){
+        return rsvpRepository.findByUser_UserId(userId);
+    }
 
     // PUT - update RSVPs going, maybe, not going
+    // PUT /rsvps/{id} - update RSVP status
+    @PutMapping("/{id}")
 
-//adding this comment for testing purposes - hopefully you can see this Sakshi hehe
 
 }
