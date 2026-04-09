@@ -66,7 +66,7 @@ private EventRepository eventRepository; //connects to the database
     return ResponseEntity.ok(eventRepository.save(event));
 }
 
-// PUT /events/{id} - update event (organisers)
+
 @DeleteMapping("/{id}")
 public ResponseEntity<Void> deleteEvent(@PathVariable Long id){
 

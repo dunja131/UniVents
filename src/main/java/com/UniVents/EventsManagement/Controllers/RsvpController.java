@@ -41,6 +41,25 @@ public class RsvpController{
     // PUT - update RSVPs going, maybe, not going
     // PUT /rsvps/{id} - update RSVP status
     @PutMapping("/{id}")
+    public ResponseEntity<Rsvp> updateRsvp(@PathVariable Long id, @RequestBody Rsvp updatedRsvp) {
+         // look for the rsvp in the database
+    Optional<Rsvp> existingRsvp = rsvpRepository.findById(id); //using Optional to safely wrap it
+
+    // if not found, return 404
+    if (existingRsvp.isEmpty()) {
+        return ResponseEntity.notFound().build();
+    }
+
+     // get the actual event out of the Optional
+    Rsvp rsvp = existingRsvp.get();
+
+
+    // overwrite the old rsvp status with the new rsvp status
+    rsvp.setStatus(updatedRsvp.getStatus());
+
+    // save and return it
+    return ResponseEntity.ok(rsvpRepository.save(rsvp));
+    }
 
 
 }
