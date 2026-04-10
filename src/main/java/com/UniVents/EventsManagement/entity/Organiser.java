@@ -28,7 +28,7 @@ public Organiser() {}
 
 public Long getOrganiserId() {return organiserId;}
 public String getOrganiserName() {return organiserName;}
-public String getOrganisersEmail() {return organiserEmail;}
+public String getOrganiserEmail() {return organiserEmail;}
 public List<Event> getEvents() {return events;}
 
 public void setOrganiserName(String organiserName) {this.organiserName = organiserName;}
