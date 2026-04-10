@@ -34,8 +34,16 @@ public class OrganiserController {
         return ResponseEntity.ok(organiser.get());
     }
 
-}
+    // POST /organisers - create an organiser
+    @PostMapping
+    public ResponseEntity<Organiser> createOrganiser(@RequestBody Organiser organiser){
+        Organiser saved = organiserRepository.save(organiser); 
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
 
+
+
+}
 
     //Put update the organiser
     //Post create an organiser
