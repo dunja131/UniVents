@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'components/event_tile.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -37,6 +38,7 @@ class _LandingPageState extends State<LandingPage> {
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: const [
               Text(
                 'Upcoming Events',
@@ -57,7 +59,19 @@ class _LandingPageState extends State<LandingPage> {
             ],
           
           ),
+        ),
+
+        const SizedBox(height: 10),
+
+        Expanded(
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              // Return the widget for each list item
+              return EventTile();
+            }
+          ),
         )
+            
         
       ],
     );
