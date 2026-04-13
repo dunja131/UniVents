@@ -27,11 +27,36 @@ class _HomePageState extends State<HomePage> {
     EventPage(),
     SettingsPage(),
   ];
+
+  final List<String> _pageTitles = [
+    'Home',
+    'Calendar',
+    'Friends',
+    'Settings',
+  ];
   
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
+        centerTitle: true,
+        elevation: 0,
+        leading: Icon(Icons.menu, color: Colors.white),
+        actions: [
+          Icon(Icons.logout, color: Colors.white),
+          SizedBox(width: 16),
+        ],
+        title: Text(
+          _pageTitles[_selectedIndex],
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         color: Colors.transparent,
