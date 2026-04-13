@@ -7,10 +7,5 @@
 
 // @Service
 // public class AuthService {
-    
 
-
-//     public User getCurrentUser(){
-//         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//             }
 // }
