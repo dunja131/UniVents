@@ -16,5 +16,10 @@ public String register(){
 return "register";
 }
 
+    @GetMapping("/")
+public String homepage(){
+return "homepage";
+}
+
 }
 

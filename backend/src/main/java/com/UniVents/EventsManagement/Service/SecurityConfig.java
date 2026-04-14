@@ -41,14 +41,14 @@ public org.springframework.security.web.SecurityFilterChain filterChain(org.spri
          .requestMatchers("/register", "/login", "/users/register").permitAll() // allow anyone to access registration endpoint
             .anyRequest().authenticated() // require authentication for all other endpoints
         )
-            // .formLogin(form -> form // overrides the API they built to create a loginform instead.
-            //     .loginPage("/login")
-            //     .usernameParameter("username")
-            //     .passwordParameter("password")
-            //     .defaultSuccessUrl("/", true)
-            //     .permitAll()
-            // )
-             .formLogin(Customizer.withDefaults())
+            .formLogin(form -> form // overrides the API they built to create a loginform instead.
+                .loginPage("/login")
+              //  .usernameParameter("username")
+              //  .passwordParameter("password")
+                .defaultSuccessUrl("/", true)
+                .permitAll()
+             )
+            // .formLogin(Customizer.withDefaults())
              .logout(logout -> logout.permitAll());
 
     return http.build();
