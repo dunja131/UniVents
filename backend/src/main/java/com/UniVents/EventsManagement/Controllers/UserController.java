@@ -1,5 +1,4 @@
 package com.UniVents.EventsManagement.Controllers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +36,7 @@ public UserController (UserRepository userRepository, BCryptPasswordEncoder pass
 
         @PostMapping("/register")
         public void register(@RequestParam String firstName, @RequestParam String lastName,
-                       @RequestParam String email, @RequestParam String password) {
+                       @RequestParam String email, @RequestParam String password, @RequestParam String role) {
                         System.out.println("REGISTER HIT");  
             User newUser = new User();
             //frontend will need to have fields set with same names so DTO can map user properly. 
@@ -45,6 +44,7 @@ public UserController (UserRepository userRepository, BCryptPasswordEncoder pass
             newUser.setLastName(lastName);
             newUser.setEmail(email);
             newUser.setPasswordHash(passwordEncoder.encode(password));
+            newUser.setRole(User.Role.valueOf(role.toUpperCase()));
             
             userRepository.save(newUser);
         }
