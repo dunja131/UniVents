@@ -1,16 +1,21 @@
+
 class Event {
   final String title;
-  final DateTime date;
-  final Duration time;
+  final double price;
+  final String date;
+  final String time;
   final String description;
   final String location;
-  final List<String> attendees;
+  final String imagePath;
+  //final List<String> attendees;
   Event({
     required this.title,
+    required this.price,
     required this.date,
     required this.time,
     required this.description,
     required this.location,
-    required this.attendees,
+    required this.imagePath,
+    //required this.attendees,
   });
 }

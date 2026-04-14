@@ -26,15 +26,7 @@ class _HomePageState extends State<HomePage> {
     CalendarPage(), 
     FriendsPage(),
     SettingsPage(),
-  ];
-
-  final List<String> _pageTitles = [
-    'Home',
-    'Calendar',
-    'Friends',
-    'Settings',
-  ];
-  
+  ];  
   
   @override
   Widget build(BuildContext context) {

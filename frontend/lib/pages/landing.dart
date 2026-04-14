@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'components/event_tile.dart';
+import 'package:frontend/models/event.dart';
+import '../../components/event_tile.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -65,9 +66,12 @@ class _LandingPageState extends State<LandingPage> {
 
         Expanded(
           child: ListView.builder(
+            itemCount: 12,
             itemBuilder: (context, index) {
-              // Return the widget for each list item
-              return EventTile();
+              Event event = Event(title: "Hyde Street 2026", price: 60.00  , date: "18/04/2026", time: "11:00am", description: "Pretty sendy time", location: "Hyde Street", imagePath: "lib/images/HydeStreet.jpg");
+              return EventTile(
+                event: event,
+              );
             }
           ),
         )
