@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LoginController {
     @GetMapping("/login")
 public String login(){
+    System.out.println("Login endpoint hit");
 return "login";
 }
 
     @GetMapping("/register")
 public String register(){
+    System.out.println("REGISTER HIT");  
 return "register";
 }
 

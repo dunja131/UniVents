@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.UniVents.EventsManagement.entity.User;
 import com.UniVents.EventsManagement.repository.UserRepository;
@@ -15,7 +16,7 @@ import com.UniVents.EventsManagement.repository.UserRepository;
 
 @RequestMapping("/users")
 public class UserController {
-        @Autowired 
+       // @Autowired 
 
      private final UserRepository userRepository;
      private final BCryptPasswordEncoder passwordEncoder;
@@ -29,19 +30,22 @@ public UserController (UserRepository userRepository, BCryptPasswordEncoder pass
     public User getUser (Authentication authentication) {
     String email = authentication.getName();
 
-    return userRepository.findByEmail(email);
+    return userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     }
 
         @PostMapping("/register")
         public void register(@RequestParam String firstName, @RequestParam String lastName,
                        @RequestParam String email, @RequestParam String password) {
+                        System.out.println("REGISTER HIT");  
             User newUser = new User();
             //frontend will need to have fields set with same names so DTO can map user properly. 
             newUser.setFirstName(firstName);
             newUser.setLastName(lastName);
             newUser.setEmail(email);
             newUser.setPasswordHash(passwordEncoder.encode(password));
+            
             userRepository.save(newUser);
         }
 
