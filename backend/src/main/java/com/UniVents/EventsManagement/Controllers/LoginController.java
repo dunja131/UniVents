@@ -13,7 +13,6 @@ return "login";
 
     @GetMapping("/register")
 public String register(){
-    System.out.println("REGISTER HIT");  
 return "register";
 }
 

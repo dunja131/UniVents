@@ -34,7 +34,9 @@ UserDetailsService userDetailsService (UserRepository repo) { // tells spring ho
 
 @Bean
 public org.springframework.security.web.SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
-    http        
+    http     
+            .csrf(csrf -> csrf.disable())
+   
            .authorizeHttpRequests(authz -> authz
          .requestMatchers("/register", "/login", "/users/register").permitAll() // allow anyone to access registration endpoint
             .anyRequest().authenticated() // require authentication for all other endpoints
