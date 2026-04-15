@@ -32,9 +32,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        //toolbarHeight: 35,
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        elevation: 0,
+        elevation: 10,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         leading: Icon(Icons.menu, color: Colors.blueAccent),
         actions: [
           Icon(Icons.logout, color: Colors.blueAccent),
