@@ -1,7 +1,7 @@
 
 class Event {
   final String title;
-  final double price;
+  final String price;
   final String date;
   final String time;
   final String description;
