@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'pages/landing.dart';
 import 'pages/calander.dart';
 import 'pages/settings.dart';
+import 'pages/optionPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     CalendarPage(), 
     FriendsPage(),
     SettingsPage(),
+    OptionPage(),
   ];  
   
   @override
@@ -70,6 +72,10 @@ class _HomePageState extends State<HomePage> {
           GButton(
             icon: Icons.settings,
             text: 'Settings',
+          ),
+          GButton(
+            icon: Icons.person_add,
+            text: 'Log in',
           ),
             ],
           ),
