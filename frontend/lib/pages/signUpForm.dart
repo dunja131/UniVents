@@ -14,7 +14,7 @@ class SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    final _passwordController = TextEditingController();
+    final passwordController = TextEditingController();
 
     return Form(
       key: _formKey,
@@ -53,7 +53,7 @@ class SignUpFormState extends State<SignUpForm> {
             },
           ),
           TextFormField(
-            controller: _passwordController,
+            controller: passwordController,
             decoration: const InputDecoration(labelText: 'Password'),
             obscureText: true,
             validator: (value) {
@@ -73,7 +73,7 @@ class SignUpFormState extends State<SignUpForm> {
               if (value == null || value.isEmpty) {
                 return 'Password is required';
               }
-              if (value != _passwordController.text) {
+              if (value != passwordController.text) {
                 return 'Passwords do not match';
               }
               return null;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/event_model.dart';
+import 'package:frontend/services/event_service.dart';
 import '../../components/event_tile.dart';
 
 class LandingPage extends StatefulWidget {
@@ -10,6 +11,50 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  List<Event>? events;
+  var isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // fetch data from api
+    getData();
+  }
+
+  getData() async {
+    try {
+      events = await EventService().getEvents();
+      if (events != null) {
+        setState(() {
+          isLoaded = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading events: $e');
+    }
+  }
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -65,25 +110,14 @@ class _LandingPageState extends State<LandingPage> {
         const SizedBox(height: 10),
 
         Expanded(
-          child: ListView.builder(
-            itemCount: 12,
-            itemBuilder: (context, index) {
-              Event event = Event(
-                title: "Hyde Street 2026",
-                price: "60.00",
-                startTime: DateTime(2026, 4, 18, 11, 0, 0),
-                endTime: DateTime(2026, 4, 18, 18, 0, 0),
-                description: "Hyde Street Party is locked in for April 18th! OUSA has partnered with the local residents of Hyde Street to work closely and ensure that everybody has the best day, making it a safe and fun time for all.",
-                location: "Hyde Street",
-                imagePath: "lib/images/HydeStreet.jpg",
-                color: const Color(0xFF0F8644),
-                isAllDay: false,
-              );
-              return EventTile(
-                event: event,
-              );
-            }
-          ),
+          child: isLoaded
+              ? ListView.builder(
+                  itemCount: events!.length,
+                  itemBuilder: (context, index) {
+                    return EventTile(event: events![index]);
+                  },
+                )
+              : const Center(child: CircularProgressIndicator()),
         )
             
         
