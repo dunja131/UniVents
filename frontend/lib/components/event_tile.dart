@@ -11,7 +11,7 @@ class EventTile extends StatefulWidget {
 }
 
 class _EventTileState extends State<EventTile> {
-  bool _isAdded = false;
+  //bool _isAdded = false;
 
   void _onAddPressed() {
     setState(() {

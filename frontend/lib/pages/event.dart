@@ -60,7 +60,8 @@ class EventPage extends StatelessWidget {
                       ),
       
                       Text(
-                        event.date,
+                        //event.date,
+                        "date",
                         style: GoogleFonts.poppins(
                           color: Colors.black,
                           fontSize: 18,
@@ -85,7 +86,8 @@ class EventPage extends StatelessWidget {
                       ),
       
                       Text(
-                        event.time,
+                        //event.startTime,
+                        "Time",
                         style: GoogleFonts.poppins(
                           color: Colors.black,
                           fontSize: 18,
