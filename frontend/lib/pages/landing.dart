@@ -22,7 +22,7 @@ class _LandingPageState extends State<LandingPage> {
     getData();
   }
 
-  getData() async {
+  Future<void> getData() async {
     try {
       events = await EventService().getEvents();
       if (events != null) {
@@ -35,24 +35,6 @@ class _LandingPageState extends State<LandingPage> {
     }
   }
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   @override
@@ -117,7 +99,7 @@ class _LandingPageState extends State<LandingPage> {
                     return EventTile(event: events![index]);
                   },
                 )
-              : const Center(child: CircularProgressIndicator()),
+              : const Center(child: Text("Failed to fetch events :(")),
         )
             
         
