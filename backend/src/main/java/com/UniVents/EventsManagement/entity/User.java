@@ -25,8 +25,8 @@ STUDENT, ORGANISER
 }
 
 @Enumerated(EnumType.STRING)
-@Column(name = "role", nullable = false)
-private Role role;
+@Column(name = "role", nullable = true) //setting to true to allow db to create role
+private Role role = Role.STUDENT; //currently defaulting to student
 
 @Column(name = "first_name", nullable = false, length = 100)
 private String firstName;
