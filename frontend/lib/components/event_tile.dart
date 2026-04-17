@@ -14,11 +14,13 @@ class _EventTileState extends State<EventTile> {
   //bool _isAdded = false;
 
   void _onAddPressed() {
+    // TODO: implement add/remove logic here
+    
     setState(() {
       
     });
 
-    // TODO: implement add/remove logic here
+    
   }
 
 

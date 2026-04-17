@@ -5,11 +5,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-
 import com.UniVents.EventsManagement.entity.User;
 import com.UniVents.EventsManagement.repository.UserRepository;
-
+import org.springframework.security.config.Customizer;
 @Configuration 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -29,43 +27,22 @@ UserDetailsService userDetailsService (UserRepository repo) { // tells spring ho
         return  org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPasswordHash())
-                .roles(user.getRole().name())  
+                .roles("USER") // for now, all users have same role. can add more roles and logic later. 
                 .build();
     };
 }
 
 @Bean
 public org.springframework.security.web.SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
-    http     
+    http
             .csrf(csrf -> csrf.disable())
-   
+
            .authorizeHttpRequests(authz -> authz
-         .requestMatchers("/login", "/register", "/user/register", "/users/register").permitAll() // allow anyone to access registration endpoint
-
-            // //role-based rules - kimi 17/04 leaving this for another person
-
-            // // organiser only
-            //     .requestMatchers(HttpMethod.POST, "/events").hasRole("ORGANISER") //only organiser permitted to create events
-            //     .requestMatchers(HttpMethod.PUT, "/events/**").hasRole("ORGANISER") //only organiser can edit an existing event
-            //     .requestMatchers(HttpMethod.DELETE, "/events/**").hasRole("ORGANISER") //only organiser can delete event
-            //     .requestMatchers(HttpMethod.GET, "/rsvps/user/**").hasAnyRole("ORGANISER") //only organiser can see full rsvp list
-            
-            // //student only
-            //     .requestMatchers(HttpMethod.POST, "/rsvps").hasRole("STUDENT") //only student can rsvp to an event
-            //     .requestMatchers(HttpMethod.DELETE, "/rsvps/**").hasRole("STUDENT") //only student can delete their rsvp from an event
-                
-            
-            //     //both can view events through browsing feed & seeing event details
-            //     .requestMatchers(HttpMethod.GET, "/events/**").hasAnyRole("STUDENT", "ORGANISER")
-            //     .requestMatchers(HttpMethod.GET, "/rsvps/event/**").hasAnyRole("STUDENT", "ORGANISER")
-
-
-
-            .anyRequest().authenticated() // require authentication for all other endpoints
+         .requestMatchers("/register", "/login", "/users/register").permitAll()
+            .anyRequest().authenticated()
         )
-
-
-            .formLogin(form -> form // overrides the API they built to create a loginform instead.
+            .httpBasic(Customizer.withDefaults())
+            .formLogin(form -> form
                 .loginPage("/login")
                 .defaultSuccessUrl("/", true)
                 .permitAll()
@@ -75,6 +52,6 @@ public org.springframework.security.web.SecurityFilterChain filterChain(org.spri
     return http.build();
 
 }
-
-
 }
+
+//SecurityFilterChain

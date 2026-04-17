@@ -13,6 +13,7 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   List<Event>? events;
   var isLoaded = false;
+  var hasError = false;
 
   @override
   void initState() {
@@ -32,6 +33,9 @@ class _LandingPageState extends State<LandingPage> {
       }
     } catch (e) {
       debugPrint('Error loading events: $e');
+      setState(() {
+        hasError = true;   // triggers UI update
+      });
     }
   }
  
@@ -99,10 +103,11 @@ class _LandingPageState extends State<LandingPage> {
                     return EventTile(event: events![index]);
                   },
                 )
-              : const Center(child: Text("Failed to fetch events :(")),
+              : hasError
+                  ? const Center(child: Text("Failed to fetch events :("))
+                  : const Center(child: CircularProgressIndicator()),
         )
-            
-        
+          
       ],
     );
   }
