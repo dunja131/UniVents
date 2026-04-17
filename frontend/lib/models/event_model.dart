@@ -14,7 +14,7 @@ class Event {
   final Color color;          
   final bool isAllDay;       
   final DateTime createdAt; 
-  final int organiserId;
+  //final int organiserId;
 
   //final List<String> attendees;
 
@@ -29,20 +29,20 @@ class Event {
     this.color = const Color(0xFF2196F3),
     this.isAllDay = false,
     required this.createdAt,
-    required this.organiserId,
+    //required this.organiserId,
 
     //required this.attendees,
   });
 
   factory Event.fromJson(Map<String, dynamic> json){
     return Event(
-      title: json['event_name'] as String, 
-      startTime: DateTime.parse(json['start_time'] as String), 
-      endTime: DateTime.parse(json['end_time'] as String), 
+      title: json['eventName'] as String, 
+      startTime: _parseDateTime(json['startTime']), 
+      endTime: _parseDateTime(json['endTime']), 
       description: json['description'] as String, 
       location: json['location'] as String, 
-      createdAt: DateTime.parse(json['created_at'] as String), 
-      organiserId: json['organiser_id'] as int,
+      createdAt: _parseDateTime(json['createdAt']), 
+      //organiserId: json['organiser_id'] as int,
 
       //price: json['price'] as String, 
       //imagePath: json['imagePath'] as String, 
@@ -50,7 +50,15 @@ class Event {
       //isAllDay: isAllDay
     );
   }
+
+  static DateTime _parseDateTime(dynamic value) {
+    if (value is List) {
+      return DateTime(value[0], value[1], value[2], value[3], value.length > 4 ? value[4] : 0);
+    }
+    return DateTime.parse(value as String);
 }
+}
+
 
 
 //event_name, description, location, start_time, end_time, created_at, organiser_id)

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:frontend/services/event_service.dart';
+import 'package:frontend/models/calender_data_source.dart';
 import '../models/event_model.dart';
+import '../pages/event.dart';
 
 
 
@@ -13,42 +16,60 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
 
+  List<Event>? events;
+  var isLoaded = false;
+  var hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // fetch data from api
+    getData();
+  }
+
+  Future<void> getData() async {
+    try {
+      events = await EventService().getEvents();
+      if (events != null) {
+        setState(() {
+          isLoaded = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading events: $e');
+      setState(() {
+        hasError = true;   // triggers UI update
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SfCalendar(
-          view: CalendarView.schedule,
-          //dataSource: MeetingDataSource(_getDataSource()),
-          //monthViewSettings: MonthViewSettings(appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-          showCurrentTimeIndicator: true,
-          showDatePickerButton: true,
-          showNavigationArrow: true,
-          showTodayButton: true,
-        )
+  return Scaffold(
+    body: hasError
+      ? const Center(child: Text('Failed to load events'))
+      : !isLoaded
+        ? const Center(child: CircularProgressIndicator())
+        : SfCalendar(
+            view: CalendarView.schedule,
+            dataSource: CalenderDataSource(events!),
+            showCurrentTimeIndicator: true,
+            showDatePickerButton: true,
+            showNavigationArrow: true,
+            showTodayButton: true,
+            onTap: (CalendarTapDetails details) {
+              // navigate to event page
+              if (details.appointments != null && details.appointments!.isNotEmpty) {
+                final event = details.appointments!.first as Event;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventPage(event: event),
+                  ),
+                );
+              }
+            },
+          ),
     );
   }
-}
-
-
-// List of meetings/events, where api call needs to go
-List<Event> _getDataSource() {
-  final List<Event> events = <Event>[];
-  final DateTime today = DateTime.now();
-  final DateTime startTime =
-      DateTime(today.year, today.month, 18, 11, 0, 0);
-  final DateTime endTime = startTime.add(const Duration(hours: 7));
-  events.add(Event(
-    title: "Hyde Street 2026",
-    price: "60.00",
-    startTime: DateTime(2026, 4, 18, 11, 0, 0),
-    endTime: DateTime(2026, 4, 18, 18, 0, 0),
-    description: "Hyde Street Party is locked in for April 18th! OUSA has partnered with the local residents of Hyde Street to work closely and ensure that everybody has the best day, making it a safe and fun time for all.",
-    location: "Hyde Street",
-    imagePath: "lib/images/HydeStreet.jpg",
-    color: const Color(0xFF0F8644),
-    isAllDay: false,
-    createdAt: DateTime(2026, 3, 18, 11, 0, 0),
-    organiserId: 1
-  ));
-  return events;
 }

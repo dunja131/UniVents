@@ -17,8 +17,8 @@ public class Event {
    @Column(name = "description", nullable = false)
     private String description;
 
-   @Column(name = "location", nullable = false) 
-    private String location; 
+   @Column(name = "location", nullable = false)
+    private String location;
 
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
@@ -29,7 +29,7 @@ public class Event {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne //links many events to one organiser 
+    @ManyToOne //links many events to one organiser
     @JoinColumn(name = "organiser_id", nullable = false)
     @JsonBackReference
     private Organiser organiser;
@@ -43,6 +43,7 @@ public LocalDateTime getStartTime() {return startTime;}
 public LocalDateTime getEndTime() {return endTime;}
 public LocalDateTime getCreatedAt() {return createdAt;}
 public Organiser getOrganiser() {return organiser;}
+public Long getOrganiserId() {return organiser != null ? organiser.getOrganiserId() : null;}
 
 public void setEventName(String eventName) {this.eventName = eventName;}
 public void setDescription(String description) {this.description = description;}
