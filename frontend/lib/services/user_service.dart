@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:frontend/models/event_model.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:http/http.dart' as http;
 

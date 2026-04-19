@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
 
 List<User> userFromJson(String str) => List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
