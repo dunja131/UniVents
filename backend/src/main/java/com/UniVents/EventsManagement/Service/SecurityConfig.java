@@ -9,7 +9,10 @@ import com.UniVents.EventsManagement.entity.User;
 import com.UniVents.EventsManagement.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;'
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+'
 @Configuration 
 @EnableWebSecurity
 public class SecurityConfig {
