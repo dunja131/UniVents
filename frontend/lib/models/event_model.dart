@@ -54,6 +54,15 @@ class Event {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+    'eventName': title,
+    'price': price,
+    'startTime': startTime.toIso8601String(),
+    'endTime': endTime.toIso8601String(),
+    'description': description,
+    'location': location,
+  };
+
   static DateTime _parseDateTime(dynamic value) {
     if (value is List) {
       return DateTime(value[0], value[1], value[2], value[3], value.length > 4 ? value[4] : 0);

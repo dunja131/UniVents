@@ -17,6 +17,7 @@ class _EventTileState extends State<EventTile> {
 
   void _onAddPressed() {
     // TODO: implement add/remove logic here and buttton change
+    
 
     
     setState(() {

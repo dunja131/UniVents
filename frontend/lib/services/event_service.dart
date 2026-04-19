@@ -35,19 +35,18 @@ class EventService {
 
 
   // TODO: implement add event 
-  void addEvent() async {
+  void addEvent(Event event) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/events'),
-      headers: {'Content-Type': 'application/json'},
-      // TODO: implement user model to JSON method
-      
-      //body: jsonEncode({'email': _email, 'password': _password}),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': _userService.authHeader,
+      },
+      body: jsonEncode(event.toJson()),
     );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to login (${response.statusCode})');
     }
-
-    throw Exception('Failed to load events (${response.statusCode})');
   }
-
+}
