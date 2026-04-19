@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.UniVents.EventsManagement.entity.User;
 import com.UniVents.EventsManagement.repository.UserRepository;
-//import org.springframework.stereotype.Service;
 
+//@Serivce commented out because identical serice?
 //@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
