@@ -84,6 +84,12 @@ public ResponseEntity<Void> deleteEvent(@PathVariable Long id){
 }
 
 
+// GET /events/user/{userId} - get all events user has RSVPd to
+@GetMapping("/user/{userId}")
+public List<Event> getEventsByUser(@PathVariable Long userId) {
+    return eventRepository.findByRsvps_User_UserId(userId);
+}
+
 
 }
 

@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.List;
+import jakarta.persistence.OneToMany;
 
 @Entity
 @Table(name = "events")
@@ -46,6 +48,9 @@ public class Event {
     @JoinColumn(name = "organiser_id", nullable = false)
     @JsonBackReference
     private Organiser organiser;
+
+    @OneToMany(mappedBy = "event")
+private List<Rsvp> rsvps;
 
 
 public Long getEventId() {return eventId;}
