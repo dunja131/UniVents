@@ -84,33 +84,3 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 }
-
-
-
-// body: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-//         child: ElevatedButton(
-//           onPressed: () => _deleteUser(user.userId),
-//           style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-//           child: const Text('Delete User'),
-//         ),
-//       ),
-
-
-
-// TextFormField(
-//             controller: _emailController,
-//             decoration: const InputDecoration(
-//               labelText: 'Email',
-//               icon: Icon(Icons.email_outlined),
-//             ),
-//             validator: (value) {
-//               if (value == null || value.isEmpty) {
-//                 return 'Email is required';
-//               }
-//               if (!value.contains('@')) {
-//                 return 'Enter a valid email';
-//               }
-//               return null;
-//             },
-//           ),

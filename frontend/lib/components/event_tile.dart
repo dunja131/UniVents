@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/pages/event.dart';
 import '../models/event_model.dart';
 import 'package:frontend/services/event_service.dart';
+import 'package:frontend/services/user_service.dart';
 
 class EventTile extends StatefulWidget {
   final Event event;
@@ -18,7 +19,6 @@ class _EventTileState extends State<EventTile> {
   void _onAddPressed() {
     // TODO: implement add/remove logic here and buttton change
     
-
     
     setState(() {
       

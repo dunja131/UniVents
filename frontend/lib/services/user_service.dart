@@ -73,19 +73,19 @@ class UserService {
     throw Exception('Failed to load users (${response.statusCode})');
   }
 
-  Future<User> createUser(User user) async {
-    final response = await http.post(
-      Uri.parse('$_baseUrl/users'),
-      headers: <String, String>{
-        'Authorization': authHeader,
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(user.toJson()),
-    );
-    if (response.statusCode == 201) {
-      return User.fromJson(jsonDecode(response.body));
+  Future<void> createUser(User user) async {
+    final uri = Uri.parse('$_baseUrl/users/register').replace(queryParameters: {
+      'firstName': user.firstName,
+      'lastName': user.lastName,
+      'email': user.email,
+      'password': user.password,
+    });
+    final response = await http.post(uri);
+    if (response.statusCode == 409) {
+      throw Exception('An account with that email already exists');
     }
-
-    throw Exception('Failed to create user (${response.statusCode})');
+    if (response.statusCode != 200) {
+      throw Exception('Failed to create user (${response.statusCode})');
+    }
   }
 }

@@ -32,7 +32,7 @@ class _OptionPageState extends State<OptionPage> {
               duration: const Duration(milliseconds: 300),
               child: _isLogin
                   ? LoginForm(key: const ValueKey('login'), onLogin: widget.onLogin)
-                  : SignUpForm(key: const ValueKey('signup')),
+                  : SignUpForm(key: const ValueKey('signup'), onLogin: widget.onLogin),
             ),
           ),
           const SizedBox(height: 16),
