@@ -4,7 +4,10 @@ import 'package:frontend/models/user_model.dart';
 import 'package:frontend/services/user_service.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  final void Function(UserService)? onLogin;
+
+  const LoginForm({super.key, this.onLogin});
+
 
   @override
   LoginFormState createState() {
@@ -30,11 +33,12 @@ class LoginFormState extends State<LoginForm> {
       final UserService _userService = UserService(_emailController.text, _passwordController.text);
       final User user = await _userService.login();
 
+      widget.onLogin?.call(_userService);
+
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Welcome, ${user.firstName}!')));
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()),);
     } catch (e) {
       ScaffoldMessenger.of(
         context,

@@ -69,4 +69,5 @@ class UserService {
 
     throw Exception('Failed to load users (${response.statusCode})');
   }
+
 }

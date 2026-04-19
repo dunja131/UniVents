@@ -32,13 +32,14 @@ private EventRepository eventRepository; //connects to the database
     return eventRepository.findAll();
     }
 
-//GET /one event
+    // GET /one event
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable Long id){
         Optional<Event> event = eventRepository.findById(id);
         return event.map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
     }
+
 
     @PostMapping
     public Event createEvent(@RequestBody Event event){

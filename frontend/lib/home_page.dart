@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/friends.dart';
+import 'package:frontend/services/user_service.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'pages/landing.dart';
 import 'pages/calander.dart';
@@ -14,6 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  UserService? userService;
+
   int _selectedIndex = 0;
 
   void _navigateBottomBar(int index) {
@@ -22,16 +27,27 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  final List<Widget> _pages = [
-    LandingPage(),
-    CalendarPage(), 
-    FriendsPage(),
-    SettingsPage(),
-    OptionPage(),
-  ];  
+  
   
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      LandingPage(),
+      CalendarPage(), 
+      FriendsPage(),
+      userService != null
+        ? SettingsPage(userService: userService!)
+        : const Scaffold(body: Center(child: Text('Please log in first'))),
+      OptionPage(
+        onLogin: (service) {
+          setState(() {
+            userService = service;
+            _selectedIndex = 0;
+          });
+        }
+      ),
+    ];  
+
     return Scaffold(
       appBar: AppBar(
         //toolbarHeight: 35,

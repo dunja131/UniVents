@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'loginForm.dart';
 import 'signUpForm.dart';
+import 'package:frontend/services/user_service.dart';
+
 
 
 class OptionPage extends StatefulWidget {
-  const OptionPage({super.key});
+  final void Function(UserService)? onLogin;
+  const OptionPage({super.key, this.onLogin});
 
   @override
   State<OptionPage> createState() => _OptionPageState();
@@ -19,6 +22,8 @@ class _OptionPageState extends State<OptionPage> {
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Scaffold(
       body: Column(
         children: [
@@ -26,7 +31,7 @@ class _OptionPageState extends State<OptionPage> {
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: _isLogin
-                  ? LoginForm(key: const ValueKey('login'))
+                  ? LoginForm(key: const ValueKey('login'), onLogin: widget.onLogin)
                   : SignUpForm(key: const ValueKey('signup')),
             ),
           ),
