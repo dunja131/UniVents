@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/home_page.dart';
 import 'package:frontend/models/user_model.dart';
-
+import 'package:frontend/services/user_service.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -13,20 +14,37 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _isLoading = false;
   List<User>? users;
 
+  final UserService _userService = UserService();
 
-  // void _submit() async{
-  //   if(_formKey.currentState!.validate()){
-  //     setState(() => _isLoading = true);
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  //     await Future.delayed(const Duration(seconds: 2));
+    setState(() => _isLoading = true);
 
-  //     setState(() => _isLoading = false);
+    try {
+      final User user = await _userService.login(
+        _emailController.text,
+        _passwordController.text,
+      );
 
-  //   }
-  // }
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Welcome, ${user.firstName}!')));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login failed: $e')));
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
