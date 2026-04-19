@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/event_model.dart';
 import 'package:frontend/services/event_service.dart';
+import 'package:frontend/services/user_service.dart';
 import '../../components/event_tile.dart';
 
 class LandingPage extends StatefulWidget {
-  const LandingPage({super.key});
+  final UserService userService;
+  const LandingPage({super.key, required this.userService});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -25,7 +27,7 @@ class _LandingPageState extends State<LandingPage> {
 
   Future<void> getData() async {
     try {
-      events = await EventService().getEvents();
+      events = await EventService(widget.userService).getEvents();
       if (events != null) {
         setState(() {
           isLoaded = true;

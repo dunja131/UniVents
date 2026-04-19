@@ -31,13 +31,18 @@ class _HomePageState extends State<HomePage> {
   
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
-      LandingPage(),
-      CalendarPage(), 
+    const Widget loginPrompt = Scaffold(body: Center(child: Text('Please log in first')));
+    final List<Widget> pages = [
+      userService != null
+        ? LandingPage(userService: userService!)
+        : loginPrompt,
+      userService != null
+        ? CalendarPage(userService: userService!)
+        : loginPrompt,
       FriendsPage(),
       userService != null
         ? SettingsPage(userService: userService!)
-        : const Scaffold(body: Center(child: Text('Please log in first'))),
+        : loginPrompt,
       OptionPage(
         onLogin: (service) {
           setState(() {
@@ -63,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         //   SizedBox(width: 16),
         // ],
       ),
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
       bottomNavigationBar: Container(
         color: Colors.transparent,
         child: Padding(

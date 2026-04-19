@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:frontend/models/user_model.dart';
 import 'package:http/http.dart' as http;
 
+
 class UserService {
   static const String _baseUrl = 'http://10.0.2.2:8080';
   final String _email;
@@ -15,12 +16,14 @@ class UserService {
 
   //String get _auth => 'Basic ${base64.encode(utf8.encode('$_username:$_password'))}';
 
-  String get _authHeader => 'Bearer $_token';
+  String get authHeader => 'Bearer $_token';
+
+  String? get userId => _currentUser?.userId;
 
   Future<List<User>> getUsers() async {
     final response = await http.get(
       Uri.parse('$_baseUrl/users'),
-      headers: {'Authorization': _authHeader},
+      headers: {'Authorization': authHeader},
     );
 
     if (response.statusCode == 200) {
@@ -47,7 +50,7 @@ class UserService {
     // Step 2: fetch user profile using the token
     final profileResponse = await http.get(
       Uri.parse('$_baseUrl/users/my-profile'),
-      headers: {'Authorization': _authHeader},
+      headers: {'Authorization': authHeader},
     );
 
     if (profileResponse.statusCode == 200) {
@@ -61,7 +64,7 @@ class UserService {
   Future<User> deleteUser(String userId) async {
     final response = await http.delete(
       Uri.parse('$_baseUrl/users'),
-      headers: <String, String>{'Authorization': _authHeader},
+      headers: <String, String>{'Authorization': authHeader},
     );
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body));

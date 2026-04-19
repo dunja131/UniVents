@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:frontend/services/event_service.dart';
+import 'package:frontend/services/user_service.dart';
 import 'package:frontend/models/calender_data_source.dart';
 import '../models/event_model.dart';
 import '../pages/event.dart';
@@ -8,7 +9,8 @@ import '../pages/event.dart';
 
 
 class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
+  final UserService userService;
+  const CalendarPage({super.key, required this.userService});
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
@@ -29,7 +31,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   Future<void> getData() async {
     try {
-      events = await EventService().getEvents();
+      events = await EventService(widget.userService).getEventsByUser();
       if (events != null) {
         setState(() {
           isLoaded = true;
