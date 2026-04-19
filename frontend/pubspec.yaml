@@ -37,6 +37,7 @@ dependencies:
   google_nav_bar: ^5.0.7
   google_fonts: ^8.0.2
   syncfusion_flutter_calendar: ^33.1.49
+  http: ^1.2.0
 
 
 
