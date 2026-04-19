@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/user_model.dart';
+
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -11,7 +13,9 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
-  // bool _isLoading = false;
+  bool _isLoading = false;
+  List<User>? users;
+
 
   // void _submit() async{
   //   if(_formKey.currentState!.validate()){
