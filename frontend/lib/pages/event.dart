@@ -18,8 +18,6 @@ class EventPage extends StatelessWidget {
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-
-
           ),
         ),
         centerTitle: true,
@@ -52,7 +50,9 @@ class EventPage extends StatelessWidget {
                     children: [
       
                       Text(
-                        event.price,
+                        event.price == 0.0 
+                          ? "Free" 
+                          : "\$${event.price.toStringAsFixed(2)}",
                         style: GoogleFonts.poppins(
                           color: Colors.black,
                           fontSize: 18,

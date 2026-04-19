@@ -78,7 +78,9 @@ class _EventTileState extends State<EventTile> {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        "\$${widget.event.price}",
+                        widget.event.price == 0.0 
+                          ? "Free" 
+                          : "\$${widget.event.price.toStringAsFixed(2)}",
                         style: TextStyle(
                           //fontWeight: FontWeight.bold,
                           fontSize: 14,

@@ -37,14 +37,15 @@ class _HomePageState extends State<HomePage> {
         //toolbarHeight: 35,
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        elevation: 10,
+        elevation: 0,
+        toolbarHeight: 5,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
-        leading: Icon(Icons.menu, color: Colors.blueAccent),
-        actions: [
-          Icon(Icons.logout, color: Colors.blueAccent),
-          SizedBox(width: 16),
-        ],
+        // leading: Icon(Icons.menu, color: Colors.blueAccent),
+        // actions: [
+        //   Icon(Icons.logout, color: Colors.blueAccent),
+        //   SizedBox(width: 16),
+        // ],
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
