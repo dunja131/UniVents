@@ -73,4 +73,19 @@ class UserService {
     throw Exception('Failed to load users (${response.statusCode})');
   }
 
+  Future<User> createUser(User user) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/users'),
+      headers: <String, String>{
+        'Authorization': authHeader,
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(user.toJson()),
+    );
+    if (response.statusCode == 201) {
+      return User.fromJson(jsonDecode(response.body));
+    }
+
+    throw Exception('Failed to create user (${response.statusCode})');
+  }
 }

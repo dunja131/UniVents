@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/friends.dart';
 import 'package:frontend/services/user_service.dart';

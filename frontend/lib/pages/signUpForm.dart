@@ -7,10 +7,66 @@ class SignUpForm extends StatefulWidget {
   SignUpFormState createState() {
     return SignUpFormState();
   }
+
+  
+
+
+
+
+
+
 }
 
 class SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+  }
+
+  Future<void> _submit() async{
+    if (!_formKey.currentState!.validate()) return;
+
+  setState(() => _isLoading = true);
+
+  try{
+    final user = User(
+      firstName: _firstNameController.text,
+      lastName: _lastNameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+
+    );
+      final UserService _userService = UserService(_emailController.text, _passwordController.text);
+
+     await _userService.createUser(user);
+
+     if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Account created')),);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+     }
+
+ 
+  } catch (e) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text ('Sign up failed: $e')),);
+    }
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
+  }
+
+  }
 
   @override
   Widget build(BuildContext context) {
