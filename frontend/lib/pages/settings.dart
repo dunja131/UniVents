@@ -10,7 +10,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final UserService _userService = UserService('', '');
+  final UserService _userService = UserService('myUser', 'myPassword');
 
   @override
   Widget build(BuildContext context) {
