@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 
 @RestController  // tells Spring this class handles HTTP requests
-@RequestMapping("/rsvps") //
+@RequestMapping("/api/rsvps") //changed to /api/rsvps
 public class RsvpController{
 
     @Autowired 

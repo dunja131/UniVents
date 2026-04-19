@@ -7,7 +7,7 @@ import java.security.Key;
 import java.util.Date;
 @Component
 public class JwtUtil {
-     private static final String SECRET = "secertkey";
+     private static final String SECRET = "UniVentsSecretKeyThatIsLongEnoughToBeSecure2026!!";
     private static final long EXPIRY_MS = 1000 * 60 * 60 * 24; // 24 hours
 
     private Key getKey() {
