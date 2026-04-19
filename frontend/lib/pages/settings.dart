@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/user_model.dart';
 import 'package:frontend/services/user_service.dart';
 import 'package:frontend/home_page.dart';
 
@@ -11,7 +10,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final UserService _userService = UserService();
+  final UserService _userService = UserService('', '');
 
   @override
   Widget build(BuildContext context) {

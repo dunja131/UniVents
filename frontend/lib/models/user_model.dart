@@ -5,7 +5,7 @@ List<User> userFromJson(String str) => List<User>.from(json.decode(str).map((x) 
 class User {
   final String userId;
   final String firstName;
-  final String lastNight;
+  final String lastName;
   final String email;
   final String password;
 
@@ -13,7 +13,7 @@ class User {
   User({
     required this.userId,
     required this.firstName,
-    required this.lastNight,
+    required this.lastName,
     required this.email,
     required this.password,
 
@@ -21,11 +21,11 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json){
     return User(
-      userId: json['user_id'] as String,
-      firstName: json['first_name'] as String,
-      lastNight: json['last_name'] as String,
-      email: json['email_address'] as String,
-      password: json['password_hash'] as String,
+      userId: json['userId'].toString(),
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      email: json['email'] as String,
+      password: json['passwordHash'] as String,
     );
   }
 

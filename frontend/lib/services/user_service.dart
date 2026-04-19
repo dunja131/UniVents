@@ -4,50 +4,64 @@ import 'package:http/http.dart' as http;
 
 class UserService {
   static const String _baseUrl = 'http://10.0.2.2:8080';
-  final String _username;
+  final String _email;
   final String _password;
   User? _currentUser;
+  String? _token;
+
   User? get currentUser => _currentUser;
-  //final String _auth = 'Basic ${base64.encode(utf8.encode('$_username:$_password'))}';
 
-  UserService(this._username, this._password);
+  UserService(this._email, this._password);
 
-  String get _auth => 'Basic ${base64.encode(utf8.encode('$_username:$_password'))}';
-  
+  //String get _auth => 'Basic ${base64.encode(utf8.encode('$_username:$_password'))}';
+
+  String get _authHeader => 'Bearer $_token';
+
   Future<List<User>> getUsers() async {
     final response = await http.get(
       Uri.parse('$_baseUrl/users'),
-      headers: <String, String>{'Authorization': _auth},
+      headers: {'Authorization': _authHeader},
     );
 
     if (response.statusCode == 200) {
       return userFromJson(response.body);
     }
-
     throw Exception('Failed to load users (${response.statusCode})');
   }
 
-  Future<User> login() async {
-    //final String _userAuth = 'Basic ${base64.encode(utf8.encode('$email:$password'))}';
-    final response = await http.get(
-      Uri.parse('$_baseUrl/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': _auth,
-      },
+
+   Future<User> login() async {
+    // Step 1: get JWT token
+    final tokenResponse = await http.post(
+      Uri.parse('$_baseUrl/api/auth/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': _email, 'password': _password}),
     );
 
-    if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
+    if (tokenResponse.statusCode != 200) {
+      throw Exception('Failed to login (${tokenResponse.statusCode})');
     }
 
-    throw Exception('Failed to login (${response.statusCode})');
+    _token = tokenResponse.body;
+
+    // Step 2: fetch user profile using the token
+    final profileResponse = await http.get(
+      Uri.parse('$_baseUrl/users/my-profile'),
+      headers: {'Authorization': _authHeader},
+    );
+
+    if (profileResponse.statusCode == 200) {
+      _currentUser = User.fromJson(jsonDecode(profileResponse.body));
+      return _currentUser!;
+    }
+    throw Exception('Failed to fetch profile (${profileResponse.statusCode})');
   }
 
+  // Needs {id} in url
   Future<User> deleteUser(String userId) async {
     final response = await http.delete(
       Uri.parse('$_baseUrl/users'),
-      headers: <String, String>{'Authorization': _auth},
+      headers: <String, String>{'Authorization': _authHeader},
     );
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body));
