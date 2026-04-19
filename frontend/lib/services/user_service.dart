@@ -6,6 +6,8 @@ class UserService {
   static const String _baseUrl = 'http://10.0.2.2:8080';
   final String _username;
   final String _password;
+  User? _currentUser;
+  User? get currentUser => _currentUser;
   //final String _auth = 'Basic ${base64.encode(utf8.encode('$_username:$_password'))}';
 
   UserService(this._username, this._password);
@@ -41,8 +43,16 @@ class UserService {
 
     throw Exception('Failed to login (${response.statusCode})');
   }
+
+  Future<User> deleteUser(String userId) async {
+    final response = await http.delete(
+      Uri.parse('$_baseUrl/users'),
+      headers: <String, String>{'Authorization': _auth},
+    );
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    }
+
+    throw Exception('Failed to load users (${response.statusCode})');
+  }
 }
-
-
-
-//final response = await http.get(Uri.parse('$_baseUrl/events'), headers: <String, String>{'Authorization': _auth});
