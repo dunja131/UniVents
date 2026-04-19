@@ -19,7 +19,7 @@ class LoginFormState extends State<LoginForm> {
   bool _isLoading = false;
   List<User>? users;
 
-  final UserService _userService = UserService();
+  
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -27,10 +27,8 @@ class LoginFormState extends State<LoginForm> {
     setState(() => _isLoading = true);
 
     try {
-      final User user = await _userService.login(
-        _emailController.text,
-        _passwordController.text,
-      );
+      final UserService _userService = UserService(_emailController.text, _passwordController.text);
+      final User user = await _userService.login();
 
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -55,6 +53,7 @@ class LoginFormState extends State<LoginForm> {
 
         children: [
           TextFormField(
+            controller: _emailController,
             decoration: const InputDecoration(
               labelText: 'Email',
               icon: Icon(Icons.email_outlined),
@@ -70,6 +69,7 @@ class LoginFormState extends State<LoginForm> {
             },
           ),
           TextFormField(
+            controller: _passwordController,
             decoration: const InputDecoration(
               labelText: 'Password',
               icon: Icon(Icons.lock_outline),
@@ -87,15 +87,7 @@ class LoginFormState extends State<LoginForm> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Logged in'),
-                    ), //comes up when submit is pressed
-                  );
-                }
-              },
+              onPressed: _isLoading ? null : _submit,
               child: const Text('Log in'), //the button
             ),
           ),

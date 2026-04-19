@@ -1,8 +1,18 @@
 package com.UniVents.EventsManagement.entity;
 
-import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "events")
@@ -14,10 +24,13 @@ public class Event {
     @Column(name = "event_name", nullable = false)
     private String eventName;
 
-   @Column(name = "description", nullable = false)
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
+
+    @Column(name = "description", nullable = false)
     private String description;
 
-   @Column(name = "location", nullable = false)
+    @Column(name = "location", nullable = false)
     private String location;
 
     @Column(name = "start_time", nullable = false)
@@ -37,6 +50,7 @@ public class Event {
 
 public Long getEventId() {return eventId;}
 public String getEventName() {return eventName;}
+public BigDecimal getPrice() {return price;}
 public String getDescription() {return description;}
 public String getLocation() {return location;}
 public LocalDateTime getStartTime() {return startTime;}
@@ -46,9 +60,12 @@ public Organiser getOrganiser() {return organiser;}
 public Long getOrganiserId() {return organiser != null ? organiser.getOrganiserId() : null;}
 
 public void setEventName(String eventName) {this.eventName = eventName;}
+public void setPrice(BigDecimal price) {this.price = price;} 
 public void setDescription(String description) {this.description = description;}
 public void setLocation(String location) {this.location = location;}
 public void setStartTime(LocalDateTime startTime) {this.startTime = startTime;}
 public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
+public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
+
 
 }

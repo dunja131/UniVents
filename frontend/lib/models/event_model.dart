@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
+
+
 List<Event> eventFromJson(String str) => List<Event>.from(json.decode(str).map((x) => Event.fromJson(x)));
 
 class Event {
   final String title;
-  final String price;
+  final double price;
   final DateTime startTime;   
   final DateTime endTime;     
   final String description;
@@ -14,13 +16,13 @@ class Event {
   final Color color;          
   final bool isAllDay;       
   final DateTime createdAt; 
-  //final int organiserId;
 
+  //final int organiserId;
   //final List<String> attendees;
 
   Event({
     required this.title,
-    this.price = "100",
+    required this.price,
     required this.startTime,
     required this.endTime,
     required this.description,
@@ -29,21 +31,22 @@ class Event {
     this.color = const Color(0xFF2196F3),
     this.isAllDay = false,
     required this.createdAt,
-    //required this.organiserId,
 
+    //required this.organiserId,
     //required this.attendees,
   });
 
   factory Event.fromJson(Map<String, dynamic> json){
     return Event(
       title: json['eventName'] as String, 
+      price: (json['price'] as num).toDouble(),
       startTime: _parseDateTime(json['startTime']), 
       endTime: _parseDateTime(json['endTime']), 
       description: json['description'] as String, 
       location: json['location'] as String, 
       createdAt: _parseDateTime(json['createdAt']), 
-      //organiserId: json['organiser_id'] as int,
 
+      //organiserId: json['organiser_id'] as int,
       //price: json['price'] as String, 
       //imagePath: json['imagePath'] as String, 
       //color: color, 
@@ -58,7 +61,3 @@ class Event {
     return DateTime.parse(value as String);
 }
 }
-
-
-
-//event_name, description, location, start_time, end_time, created_at, organiser_id)
