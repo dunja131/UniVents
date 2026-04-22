@@ -78,6 +78,10 @@ verifying signup, login and event viewing workflows.
 - Frontend RSVP connection to backend is in progress
 - Password hash is currently exposed in some API responses
   (to be fixed with `@JsonIgnore`)
+- JUnit unit tests for JwtUtil are in progress — 
+  to be completed in next milestone
+  - All users are currently defaulted to `STUDENT` role — 
+  organiser role and permissions to be implemented in next milestone
 
 ## Database Schema
 
