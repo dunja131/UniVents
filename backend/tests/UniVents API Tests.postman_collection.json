@@ -1,0 +1,1090 @@
+{
+  "info": {
+    "_postman_id": "55d10819-9ffa-4f91-8f6d-760447e7ebe0",
+    "name": "UniVents API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53838379"
+  },
+  "item": [
+    {
+      "name": "Login Tests",
+      "item": [
+        {
+          "name": "Post Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has token\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.not.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"jwt_token\", pm.response.text());"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"berrybanana@email.com\",\r\n    \"password\": \"iloveberries!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Tests",
+      "item": [
+        {
+          "name": "Register New User",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var timestamp = new Date().getTime();\r",
+                  "pm.collectionVariables.set(\"test_email\", \"testuser\" + timestamp + \"@email.com\");"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"new_user_id\", pm.response.json().userId);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstName",
+                  "value": "Vanilla",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "lastName",
+                  "value": "Lily",
+                  "type": "text",
+                  "id": 1
+                },
+                {
+                  "key": "email",
+                  "value": "{{test_email}}",
+                  "type": "text",
+                  "id": 2
+                },
+                {
+                  "key": "password",
+                  "value": "ilovevanilla!",
+                  "type": "text",
+                  "id": 3
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/users/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User My Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/users/my-profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "my-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {\r",
+                  "    pm.response.to.have.status(204);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body is empty\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.be.empty;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/users/{{new_user_id}}",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "{{new_user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/users/4",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Events Tests",
+      "item": [
+        {
+          "name": "Get All Events",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is an array\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json).to.be.an('array');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/events",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "events"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Events By EventID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has event name\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.eventName).to.not.be.undefined;\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"event_id\", pm.response.json().id);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/events/8",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "events",
+                "8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Event By Event ID Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/events/222",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "events",
+                "222"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put Update Event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Event name was updated\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.eventName).to.equal(\"Hackathon 2026\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Price was updated\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.price).to.equal(15.00);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"eventName\": \"Hackathon 2026\",\r\n    \"description\": \"24 hour coding competition\",\r\n    \"location\": \"Engineering Block B, Lab 204\",\r\n    \"price\": 15.00,\r\n    \"startTime\": \"2026-05-15T10:00:00\",\r\n    \"endTime\": \"2026-05-16T10:00:00\",\r\n    \"organiser\": { \"organiser_id\": 1 }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/events/8",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "events",
+                "8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put Update Event Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"eventName\": \"Non-existent Event\",\r\n    \"description\": \"This event does not exist\",\r\n    \"location\": \"Nowhere\",\r\n    \"price\": 0.00,\r\n    \"startTime\": \"2026-05-01T10:00:00\",\r\n    \"endTime\": \"2026-05-01T12:00:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/events/222",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "events",
+                "222"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Event By EventID (RSVPs connected)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 500 - Cannot delete event with RSVPs\", function () {\r",
+                  "    pm.response.to.have.status(500); //shows that foreign key constraint is working \r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/events/8",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "events",
+                "8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Event By EventID Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjAzMzEsImV4cCI6MTc3Njg0NjczMX0.No-4h_lBbztIDXn63xFuo_QhHxqDDc6LoFYCFZC4uhg",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/events/222",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "events",
+                "222"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Event By EventID No RSVPs connected",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rsvp Tests",
+      "item": [
+        {
+          "name": "Create RSVP to Event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"RSVP status is GOING\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.status).to.equal(\"GOING\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"RSVP has an ID\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.rsvpId).to.not.be.undefined;\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"rsvp_id\", pm.response.json().id);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjA1MTAsImV4cCI6MTc3Njg0NjkxMH0.MOToNaR27GXalJ66xuxV02WwMPHsnkKHFzh5YWkfqoE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user\": { \"userId\": 2 },\r\n    \"event\": { \"eventId\": 8 },\r\n    \"status\": \"GOING\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/rsvps",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rsvps"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get RSVP by Event ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is an array\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json).to.be.an('array');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"RSVPs belong to correct user\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    json.forEach(function(rsvp) {\r",
+                  "        pm.expect(rsvp.user.userId).to.equal(2);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjA1MTAsImV4cCI6MTc3Njg0NjkxMH0.MOToNaR27GXalJ66xuxV02WwMPHsnkKHFzh5YWkfqoE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/rsvps/event/8",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rsvps",
+                "event",
+                "8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All RSVPs by User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Each RSVP has full event details\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    json.forEach(function(rsvp) {\r",
+                  "        pm.expect(rsvp.event.eventName).to.not.be.undefined;\r",
+                  "        pm.expect(rsvp.event.location).to.not.be.undefined;\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjA1MTAsImV4cCI6MTc3Njg0NjkxMH0.MOToNaR27GXalJ66xuxV02WwMPHsnkKHFzh5YWkfqoE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/rsvps/user/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rsvps",
+                "user",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status updated to MAYBE\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.status).to.equal(\"MAYBE\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"RSVP ID is unchanged\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.rsvpId).to.equal(7);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User is unchanged\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.user.userId).to.equal(2);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Event is unchanged\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.event.eventId).to.equal(8);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjA1MTAsImV4cCI6MTc3Njg0NjkxMH0.MOToNaR27GXalJ66xuxV02WwMPHsnkKHFzh5YWkfqoE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"MAYBE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/rsvps/7",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rsvps",
+                "7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update RSVP Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjA1MTAsImV4cCI6MTc3Njg0NjkxMH0.MOToNaR27GXalJ66xuxV02WwMPHsnkKHFzh5YWkfqoE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"GOING\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/rsvps/333",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rsvps",
+                "333"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get one RSVP by User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is an array\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json).to.be.an('array');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Array is not empty\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"RSVPs belong to correct user\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    json.forEach(function(rsvp) {\r",
+                  "        pm.expect(rsvp.user.userId).to.equal(2);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Each RSVP has a status\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    json.forEach(function(rsvp) {\r",
+                  "        pm.expect(rsvp.status).to.not.be.undefined;\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Each RSVP has an event\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    json.forEach(function(rsvp) {\r",
+                  "        pm.expect(rsvp.event).to.not.be.undefined;\r",
+                  "        pm.expect(rsvp.event.eventId).to.not.be.undefined;\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZXJyeWJhbmFuYUBlbWFpbC5jb20iLCJpYXQiOjE3NzY3NjA1MTAsImV4cCI6MTc3Njg0NjkxMH0.MOToNaR27GXalJ66xuxV02WwMPHsnkKHFzh5YWkfqoE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/rsvps/user/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "rsvps",
+                "user",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "new_user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rsvp_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "test_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "event_id",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

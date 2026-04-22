@@ -45,7 +45,7 @@ public class Event {
     private LocalDateTime createdAt;
 
     @ManyToOne //links many events to one organiser
-    @JoinColumn(name = "organiser_id", nullable = false)
+    @JoinColumn(name = "organiser_id", nullable = true) //have made organiser nullable for now so i can test adding a new event in postman and I am currently logged in as student (with token) - will change (kimi 21/04)
     @JsonBackReference
     private Organiser organiser;
 

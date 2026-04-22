@@ -40,8 +40,8 @@ public UserController (UserRepository userRepository, BCryptPasswordEncoder pass
 
     }
 
-        @PostMapping("/register")
-        public void register(@RequestParam String firstName, @RequestParam String lastName,
+        @PostMapping("/register") //removed void so that when Postman calls register, it can get a response body (get the user ID ) and save the ID automatically
+        public ResponseEntity<User> register(@RequestParam String firstName, @RequestParam String lastName,
                        @RequestParam String email, @RequestParam String password) {
                         System.out.println("REGISTER HIT");  
             User newUser = new User();
@@ -52,7 +52,9 @@ public UserController (UserRepository userRepository, BCryptPasswordEncoder pass
             newUser.setPasswordHash(passwordEncoder.encode(password));
             newUser.setRole(Role.STUDENT);
             
-            userRepository.save(newUser);
+           User saved = userRepository.save(newUser);
+
+            return ResponseEntity.ok(saved);
         }
 
     @DeleteMapping("/{id}")
@@ -64,7 +66,6 @@ public UserController (UserRepository userRepository, BCryptPasswordEncoder pass
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
 
 
     }

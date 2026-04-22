@@ -28,6 +28,8 @@ public Event getEvent() {return event;}
 public String getStatus() {return status;}
 
 
-public void setStatus(String status) {this.status = status;} 
+public void setStatus(String status) {this.status = status;}
+public void setUser(User user) { this.user = user; }
+public void setEvent(Event event) { this.event = event; } 
 
 }
