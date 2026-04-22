@@ -2,8 +2,10 @@
 A university events management app that allows students to discover, rsvp and manage their university events. 
 
 ## Project Structure
-/backend Spring Boot
-/frontend Flutter app
+| Folder | Description |
+|---|---|
+| `/backend` | Spring Boot REST API |
+| `/flutter` | Flutter mobile and web app |
 
 ## Project Status — Milestone 1
 
