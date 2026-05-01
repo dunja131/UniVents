@@ -3,7 +3,8 @@ package com.UniVents.EventsManagement.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "rsvps")
+@Table(name = "rsvps", uniqueConstraints = { @UniqueConstraint(columnNames = {"user_id", "event_id"}) //this is to ensure one RSVP per user per event
+})
 public class Rsvp{
 
 @Id
