@@ -61,6 +61,16 @@ public class RsvpController{
     return ResponseEntity.ok(rsvpRepository.save(rsvp));
     }
 
+    //Delete an RSVP - for the User to undo their rsvp to an event 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRsvp(@PathVariable Long id) {
+     if (!rsvpRepository.existsById(id)) {
+        return ResponseEntity.notFound().build();
+    }
+    rsvpRepository.deleteById(id);
+    
+    return ResponseEntity.noContent().build();
+}
 
 
 }

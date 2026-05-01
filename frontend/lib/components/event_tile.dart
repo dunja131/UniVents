@@ -7,6 +7,7 @@ import 'package:frontend/services/user_service.dart';
 class EventTile extends StatefulWidget {
   final Event event;
   final UserService userService;
+
   const EventTile({super.key, required this.event, required this.userService});
 
   @override
@@ -14,30 +15,77 @@ class EventTile extends StatefulWidget {
 }
 
 class _EventTileState extends State<EventTile> {
-  bool _hasRsvped = false; //tracks if the user has RSVPd
+  bool _hasRsvped = false; //tracks if the logged in user has RSVPd to an event on landing page
 
+  //getter to avoid repeating RsvpService(widget.userService)
+  RsvpService get _rsvpService => RsvpService(widget.userService);
 
-  void _onAddPressed() async {
-    // TODO: implement add/remove logic here and buttton change
-    try{
-      await RsvpService(widget.userService).createRsvp(
-        eventId: widget.event.eventId,
-        status: "GOING", 
-      );
-        setState(() {
-          _hasRsvped = true; //the animation changes? - i assume this changes blue box to green
-     });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("RSVP successful!")),
-      );
+  @override
+  void initState() {
+    super.initState();
+    _checkRsvpStatus(); // check database when tile first loads
+  }
+
+  //Private Methods
+
+//Checks the database to see if the logged in user already has an RSVP to events on landing page 
+//Runs on the load so button shows correct state even when clicking off landing page
+  Future<void> _checkRsvpStatus() async {
+    try {
+      // ask backend if this user already has an RSVP for this event
+      int? rsvpId = await RsvpService(
+        widget.userService,
+      ).getRsvpId(eventId: widget.event.eventId);
+      setState(() {
+        _hasRsvped = rsvpId != null; // true if RSVP exists and green!, false if not = blue! 
+      });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("RSVP failed: $e")),
-      );
+      debugPrint('Error checking RSVP status: $e');
     }
   }
-    
-    
+
+      // just decides which method to call
+    Future<void> _onAddPressed() async {
+        try {
+          if (_hasRsvped) {
+            await _removeRsvp();
+          } else {
+            await _createRsvp();
+          }
+        } catch (e) {
+          _showSnackBar("Failed: $e");
+        }
+    }
+
+    // only handles creating the RSVP and setting it to GOING status
+    Future<void> _createRsvp() async {
+        await _rsvpService.createRsvp(
+          eventId: widget.event.eventId,
+          status: "GOING",
+        );
+        setState(() => _hasRsvped = true);
+        _showSnackBar("RSVP successful!");
+    }
+
+    // only handles deleting
+    Future<void> _removeRsvp() async {
+        final int? rsvpId = await _rsvpService.getRsvpId(
+          eventId: widget.event.eventId,
+        );
+        if (rsvpId != null) {
+          await _rsvpService.deleteRsvp(rsvpId: rsvpId);
+          setState(() => _hasRsvped = false);
+          _showSnackBar("RSVP removed!");
+        }
+    }
+
+  // shows a snackbar message at the bottom of the screen
+    void _showSnackBar(String message) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +115,7 @@ class _EventTileState extends State<EventTile> {
               child: SizedBox(
                 height: 150,
                 width: 400,
-                child: Image.asset(
-                  widget.event.imagePath,
-                  fit: BoxFit.cover,
-                ),
+                child: Image.asset(widget.event.imagePath, fit: BoxFit.cover),
               ),
             ),
             Padding(
@@ -92,9 +137,9 @@ class _EventTileState extends State<EventTile> {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        widget.event.price == 0.0 
-                          ? "Free" 
-                          : "\$${widget.event.price.toStringAsFixed(2)}",
+                        widget.event.price == 0.0
+                            ? "Free"
+                            : "\$${widget.event.price.toStringAsFixed(2)}",
                         style: TextStyle(
                           //fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -103,36 +148,39 @@ class _EventTileState extends State<EventTile> {
                       ),
                     ],
                   ),
+                  
+                  //RSVP Button - blue + or green tick for going
                   GestureDetector(
                     onTap: _onAddPressed,
-                
+
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: _hasRsvped ? Colors.green : Colors.blueAccent,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                        ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: _hasRsvped //if else statement so when user presses + to rsvp, it changes blue box to green tick with going 
-                      ? Row(mainAxisSize: MainAxisSize.min,
-                      children: [Icon(Icons.check, color: Colors.white, size:16),
-                      SizedBox(width: 4),
+
+                      child:
+                          _hasRsvped //if else statement so when user presses + to rsvp, it changes blue box to green tick with going
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 4),
                                 Text(
                                   "Going",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
                             )
-
-
-                      : const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
+                          : const Icon(Icons.add, color: Colors.white),
                     ),
                   ),
                 ],
