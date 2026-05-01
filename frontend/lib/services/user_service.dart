@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:http/http.dart' as http;
 
 
 class UserService {
-  static const String _baseUrl = 'http://10.0.2.2:8080';
+  static const String _baseUrl = 'http://localhost:8080';//'http://10.0.2.2:8080';
   final String _email;
   final String _password;
   User? _currentUser;
@@ -52,6 +53,9 @@ class UserService {
       Uri.parse('$_baseUrl/users/my-profile'),
       headers: {'Authorization': authHeader},
     );
+
+    debugPrint('Profile response: ${profileResponse.statusCode}'); 
+    debugPrint('Profile body: ${profileResponse.body}');
 
     if (profileResponse.statusCode == 200) {
       _currentUser = User.fromJson(jsonDecode(profileResponse.body));

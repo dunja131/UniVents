@@ -16,6 +16,7 @@ class Event {
   final Color color;          
   final bool isAllDay;       
   final DateTime createdAt; 
+  final int eventId;
 
   //final int organiserId;
   //final List<String> attendees;
@@ -31,6 +32,7 @@ class Event {
     this.color = const Color(0xFF2196F3),
     this.isAllDay = false,
     required this.createdAt,
+    required this.eventId,
 
     //required this.organiserId,
     //required this.attendees,
@@ -38,6 +40,7 @@ class Event {
 
   factory Event.fromJson(Map<String, dynamic> json){
     return Event(
+      eventId: json['eventId'] as int,
       title: json['eventName'] as String, 
       price: (json['price'] as num).toDouble(),
       startTime: _parseDateTime(json['startTime']), 
@@ -53,6 +56,8 @@ class Event {
       //isAllDay: isAllDay
     );
   }
+
+
 
   Map<String, dynamic> toJson() => {
     'eventName': title,

@@ -1,33 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/event.dart';
+import 'package:frontend/services/rsvp_service.dart';
 import '../models/event_model.dart';
-import 'package:frontend/services/event_service.dart';
 import 'package:frontend/services/user_service.dart';
 
 class EventTile extends StatefulWidget {
   final Event event;
-  const EventTile({super.key, required this.event});
+  final UserService userService;
+  const EventTile({super.key, required this.event, required this.userService});
 
   @override
   State<EventTile> createState() => _EventTileState();
 }
 
 class _EventTileState extends State<EventTile> {
-  //bool _isAdded = false;
+  bool _hasRsvped = false; //tracks if the user has RSVPd
 
 
-  void _onAddPressed() {
+  void _onAddPressed() async {
     // TODO: implement add/remove logic here and buttton change
-    
-    
-    setState(() {
-      
-    });
-
-    
+    try{
+      await RsvpService(widget.userService).createRsvp(
+        eventId: widget.event.eventId,
+        status: "GOING", 
+      );
+        setState(() {
+          _hasRsvped = true; //the animation changes? - i assume this changes blue box to green
+     });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("RSVP successful!")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("RSVP failed: $e")),
+      );
+    }
   }
-
-
+    
+    
 
   @override
   Widget build(BuildContext context) {
@@ -98,14 +108,28 @@ class _EventTileState extends State<EventTile> {
                 
                     child: Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
-                        color: Colors.blueAccent,
+                      decoration: BoxDecoration(
+                        color: _hasRsvped ? Colors.green : Colors.blueAccent,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(12),
                           bottomRight: Radius.circular(12),
                         ),
                       ),
-                      child: const Icon(
+                      child: _hasRsvped //if else statement so when user presses + to rsvp, it changes blue box to green tick with going 
+                      ? Row(mainAxisSize: MainAxisSize.min,
+                      children: [Icon(Icons.check, color: Colors.white, size:16),
+                      SizedBox(width: 4),
+                                Text(
+                                  "Going",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )
+
+
+                      : const Icon(
                         Icons.add,
                         color: Colors.white,
                       ),

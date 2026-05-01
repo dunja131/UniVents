@@ -106,7 +106,10 @@ class _LandingPageState extends State<LandingPage> {
               ? ListView.builder(
                   itemCount: events!.length,
                   itemBuilder: (context, index) {
-                    return EventTile(event: events![index]);
+                   return EventTile(
+                    event: events![index],
+                      userService: widget.userService, // pass userService down so can send token + userId to Springboot 
+);
                   },
                 )
               : hasError

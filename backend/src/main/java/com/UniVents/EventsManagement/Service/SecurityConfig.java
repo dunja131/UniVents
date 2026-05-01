@@ -14,6 +14,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.UniVents.EventsManagement.entity.User;
 import com.UniVents.EventsManagement.repository.UserRepository;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -48,19 +53,33 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+    @Bean //this tells Springboot which is permitted to tlak to backend
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); //had to add options for chrome debugging (preflight check Chrome sends)
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+    return source;
+}
+
     @Bean
     public org.springframework.security.web.SecurityFilterChain filterChain(
             org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
         http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .requestMatchers("/users/**").authenticated()
-                .requestMatchers("/events/**").authenticated()
+                .requestMatchers("/api/auth/**").permitAll() //login - open to everyone
+                  .requestMatchers("/users/register").permitAll()   // register - open to everyone
+                .requestMatchers("/api/**").authenticated() //all api routes (i.e. rsvp) need token
+                .requestMatchers("/users/**").authenticated() //all user routes need token
+                .requestMatchers("/events/**").authenticated() // all event routes need token
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form.disable())
