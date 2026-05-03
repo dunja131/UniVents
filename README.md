@@ -51,21 +51,21 @@ flutter run
 ## Testing
 
 ### Integration Testing (Postman)
-38 automated API tests covering all controllers.
+39 automated API tests covering all controllers.
 
 **To run Postman tests:**
 1. Import `backend/tests/UniVents_API_Tests.postman_collection.json`
    into Postman
 2. Start the Spring Boot backend
 3. Run the full collection in order — Login must run first
-4. All 38 tests should pass
+4. All 39 tests should pass
 
 | Controller | Endpoints Tested | Result |
 |---|---|---|
 | AuthController | POST /api/auth/login | Pass |
 | UserController | POST Register, GET Profile, DELETE User, DELETE User Not Found | Pass |
 | EventController | GET, PUT, DELETE | Pass |
-| RsvpController | POST, GET, PUT | Pass |
+| RsvpController | POST, GET, PUT, DELETE | Pass |
 
 ### Manual System Testing
 End-to-end testing was performed manually through the Flutter app
@@ -100,5 +100,5 @@ PostgreSQL database with the following tables:
 |---|---|---|
 | Kimi Pedebone | dkp333 | Backend |
 | Sakshi Pal | SakshiPal941 | Backend |
-| Jack | dunja131/KiwKipper | Frontend |
+| Jack Dunlop | dunja131/KiwKipper | Frontend |
 | Anna Loyd | Anna Loyd | Frontend |
