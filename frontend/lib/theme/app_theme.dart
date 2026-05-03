@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:frontend/theme/app_colours.dart';
+
 
 class AppTheme {
   static ThemeData get theme => ThemeData(
     useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+    
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColours.primary,
+      brightness: Brightness.light,
+    ),
 
-    textTheme: GoogleFonts.poppinsTextTheme(),
+    textTheme: GoogleFonts.interTextTheme(),
 
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.blueAccent,

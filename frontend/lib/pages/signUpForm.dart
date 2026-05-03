@@ -4,8 +4,13 @@ import 'package:frontend/services/user_service.dart';
 
 class SignUpForm extends StatefulWidget {
   final void Function(UserService)? onLogin;
+  final bool isOrganiser;
 
-  const SignUpForm({super.key, this.onLogin});
+  const SignUpForm({
+    super.key, 
+    this.onLogin,
+    this.isOrganiser = false,
+    });
 
   @override
   SignUpFormState createState() => SignUpFormState();
@@ -119,12 +124,17 @@ class SignUpFormState extends State<SignUpForm> {
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : _submit,
-              child: const Text('Sign up'),
-            ),
-          ),
+  padding: const EdgeInsets.symmetric(vertical: 16),
+  child: SizedBox(
+    width: double.infinity,
+    child: ElevatedButton(
+      onPressed: _isLoading ? null : _submit,
+      child: _isLoading
+          ? const CircularProgressIndicator(color: Colors.white)
+          : const Text('Sign up'),
+    ),
+  ),
+),
         ],
       ),
     );

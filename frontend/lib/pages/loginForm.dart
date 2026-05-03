@@ -4,8 +4,13 @@ import 'package:frontend/services/user_service.dart';
 
 class LoginForm extends StatefulWidget {
   final void Function(UserService)? onLogin;
+  final bool isOrganiser;
 
-  const LoginForm({super.key, this.onLogin});
+  const LoginForm(
+    {super.key, 
+    this.onLogin,
+    this.isOrganiser = false,
+    });
 
   @override
   LoginFormState createState() {
