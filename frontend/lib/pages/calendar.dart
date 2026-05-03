@@ -3,8 +3,8 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:frontend/services/event_service.dart';
 import 'package:frontend/services/user_service.dart';
 import 'package:frontend/models/calender_data_source.dart';
-import '../models/event_model.dart';
-import '../pages/event.dart';
+import 'package:frontend/models/event_model.dart';
+import 'package:frontend/pages/event.dart';
 
 
 

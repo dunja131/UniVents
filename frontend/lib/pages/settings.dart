@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/user_service.dart';
 import 'package:frontend/home_page.dart';
+import 'package:frontend/theme/app_colours.dart';
 
 class SettingsPage extends StatefulWidget {
   final UserService userService;
@@ -15,6 +16,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final user = widget.userService.currentUser;
+    final textTheme = Theme.of(context).textTheme;
 
     if (user == null) {
       return const Scaffold(body: Center(child: Text('No user logged in')));
@@ -28,38 +30,28 @@ class _SettingsPageState extends State<SettingsPage> {
           Row(
             children: [
               Text(
-                "First Name",
-                selectionColor: Colors.blueAccent,
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+                'First Name: ',
+                style: textTheme.bodyLarge,
               ),
               Text(
                 user.firstName,
-                selectionColor: Colors.blueAccent,
-                style: TextStyle(
-                  fontSize: 20,
+                style: textTheme.bodyLarge?.copyWith(
+                  color: AppColours.primary,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-      
-      
+
           // second name
           Row(),
-      
-      
+
           // email
           Row(),
-      
+
           // password
           Row(),
-      
-      
-      
         ],
-        
-        
       ),
     );
   }
@@ -79,7 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete user successfully: $e')),
+        SnackBar(content: Text('Failed to delete user: $e')),
       );
     }
   }

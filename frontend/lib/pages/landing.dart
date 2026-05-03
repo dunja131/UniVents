@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/event_model.dart';
 import 'package:frontend/services/event_service.dart';
 import 'package:frontend/services/user_service.dart';
-import '../../components/event_tile.dart';
+import 'package:frontend/components/event_tile.dart';
+import 'package:frontend/theme/app_colours.dart';
 
 class LandingPage extends StatefulWidget {
   final UserService userService;
@@ -40,8 +41,6 @@ class _LandingPageState extends State<LandingPage> {
       });
     }
   }
- 
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,19 +48,16 @@ class _LandingPageState extends State<LandingPage> {
       children: [
         // search bar
         Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.blueAccent,
+            color: AppColours.primary,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Search',
-                style: TextStyle(color: Colors.white),
-              ),
+              Text('Search', style: TextStyle(color: Colors.white)),
               Icon(Icons.search, color: Colors.white),
             ],
           ),
@@ -73,31 +69,24 @@ class _LandingPageState extends State<LandingPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: const [
+            children: [
               Text(
                 'Upcoming Events',
-                style: TextStyle(
-                  fontSize: 18, 
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppColours.primary,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent
                 ),
               ),
               Text(
                 'See all',
-                style: TextStyle(
-                  fontSize: 18, 
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppColours.primary,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent
                 ),
-              )
+              ),
             ],
-          
           ),
         ),
-
-
-
-        
 
         const SizedBox(height: 10),
 
@@ -106,19 +95,17 @@ class _LandingPageState extends State<LandingPage> {
               ? ListView.builder(
                   itemCount: events!.length,
                   itemBuilder: (context, index) {
-                   return EventTile(
-                    event: events![index],
-                      userService: widget.userService, // pass userService down so can send token + userId to Springboot 
-);
+                    return EventTile(
+                      event: events![index],
+                      userService: widget.userService, // pass userService down so can send token + userId to Springboot
+                    );
                   },
                 )
               : hasError
-                  ? const Center(child: Text("Failed to fetch events :("))
+                  ? const Center(child: Text('Failed to fetch events :('))
                   : const Center(child: CircularProgressIndicator()),
-        )
-          
+        ),
       ],
     );
   }
 }
-      

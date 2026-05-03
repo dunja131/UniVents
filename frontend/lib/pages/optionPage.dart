@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'loginForm.dart';
-import 'signUpForm.dart';
+import 'package:frontend/pages/loginForm.dart';
+import 'package:frontend/pages/signUpForm.dart';
 import 'package:frontend/services/user_service.dart';
 
 

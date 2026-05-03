@@ -7,7 +7,6 @@ class LoginForm extends StatefulWidget {
 
   const LoginForm({super.key, this.onLogin});
 
-
   @override
   LoginFormState createState() {
     return LoginFormState();
@@ -21,15 +20,16 @@ class LoginFormState extends State<LoginForm> {
   bool _isLoading = false;
   List<User>? users;
 
-  
-
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final UserService _userService = UserService(_emailController.text, _passwordController.text);
+      final UserService _userService = UserService(
+        _emailController.text,
+        _passwordController.text,
+      );
       final User user = await _userService.login();
 
       widget.onLogin?.call(_userService);
@@ -89,9 +89,14 @@ class LoginFormState extends State<LoginForm> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : _submit,
-              child: const Text('Log in'), //the button
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _submit,
+                child: _isLoading //this is to show a loading spinner
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('Log in'),
+              ),
             ),
           ),
         ],
