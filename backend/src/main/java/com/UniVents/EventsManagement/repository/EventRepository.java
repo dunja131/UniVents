@@ -8,6 +8,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByRsvps_User_UserId(Long userId);
 
-
+    //springboot maps this as search where category matches passed in category
+    List<Event> findByCategoryIgnoreCase(String category); 
     
 }

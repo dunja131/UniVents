@@ -66,7 +66,10 @@ class _CalendarPageState extends State<CalendarPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EventPage(event: event),
+                    builder: (context) => EventPage(
+                      event: event,
+                      userService: widget.userService
+                      ),
                   ),
                 );
               }

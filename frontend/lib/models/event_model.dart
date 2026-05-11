@@ -17,6 +17,7 @@ class Event {
   final bool isAllDay;       
   final DateTime createdAt; 
   final int eventId;
+  final String? category; // have made category null at the moment so flutter can handle it
 
   //final int organiserId;
   //final List<String> attendees;
@@ -33,6 +34,7 @@ class Event {
     this.isAllDay = false,
     required this.createdAt,
     required this.eventId,
+    this.category,
 
     //required this.organiserId,
     //required this.attendees,
@@ -47,7 +49,8 @@ class Event {
       endTime: _parseDateTime(json['endTime']), 
       description: json['description'] as String, 
       location: json['location'] as String, 
-      createdAt: _parseDateTime(json['createdAt']), 
+      createdAt: _parseDateTime(json['createdAt']),
+      category: json['category'] as String?, 
 
       //organiserId: json['organiser_id'] as int,
       //price: json['price'] as String, 

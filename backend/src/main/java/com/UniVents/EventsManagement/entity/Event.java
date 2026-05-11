@@ -44,6 +44,9 @@ public class Event {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "category", nullable = false) 
+    private String category;
+
     @ManyToOne //links many events to one organiser
     @JoinColumn(name = "organiser_id", nullable = true) //have made organiser nullable for now so i can test adding a new event in postman and I am currently logged in as student (with token) - will change (kimi 21/04)
     @JsonBackReference
@@ -63,6 +66,8 @@ public LocalDateTime getEndTime() {return endTime;}
 public LocalDateTime getCreatedAt() {return createdAt;}
 public Organiser getOrganiser() {return organiser;}
 public Long getOrganiserId() {return organiser != null ? organiser.getOrganiserId() : null;}
+public String getCategory() { return category; }
+
 
 public void setEventName(String eventName) {this.eventName = eventName;}
 public void setPrice(BigDecimal price) {this.price = price;} 
@@ -71,6 +76,7 @@ public void setLocation(String location) {this.location = location;}
 public void setStartTime(LocalDateTime startTime) {this.startTime = startTime;}
 public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
 public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
+public void setCategory(String category) { this.category = category; }
 
 
 }

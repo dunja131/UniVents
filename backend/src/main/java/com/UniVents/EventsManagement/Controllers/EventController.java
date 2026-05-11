@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.UniVents.EventsManagement.entity.Event;
 import com.UniVents.EventsManagement.repository.EventRepository;
 
+import org.springframework.web.bind.annotation.RequestParam; 
+
 
 @RestController  // tells Spring this class handles HTTP requests
 @RequestMapping("/events") //
@@ -27,10 +29,15 @@ public class EventController{
 private EventRepository eventRepository; //connects to the database
 
     // GET /events - all events 
+    // updated 12/05 so that it now accepts an optional category as param
+    // No category in param = just return everything, otherwise return the filtered category events result
     @GetMapping
-    public List<Event> getAllEvents() {
-    return eventRepository.findAll();
+   public List<Event> getAllEvents(@RequestParam(required = false) String category) {
+    if (category == null || category.isBlank()) {
+        return eventRepository.findAll();
     }
+    return eventRepository.findByCategoryIgnoreCase(category);
+}
 
     // GET /one event
     @GetMapping("/{id}")

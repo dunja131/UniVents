@@ -16,7 +16,8 @@ class EventTile extends StatefulWidget {
 }
 
 class _EventTileState extends State<EventTile> {
-  bool _hasRsvped = false; //tracks if the logged in user has RSVPd to an event on landing page
+  bool _hasRsvped =
+      false; //tracks if the logged in user has RSVPd to an event on landing page
 
   //getter to avoid repeating RsvpService(widget.userService)
   RsvpService get _rsvpService => RsvpService(widget.userService);
@@ -38,7 +39,9 @@ class _EventTileState extends State<EventTile> {
         widget.userService,
       ).getRsvpId(eventId: widget.event.eventId);
       setState(() {
-        _hasRsvped = rsvpId != null; // true if RSVP exists and green!, false if not = blue!
+        _hasRsvped =
+            rsvpId !=
+            null; // true if RSVP exists and green!, false if not = blue!
       });
     } catch (e) {
       debugPrint('Error checking RSVP status: $e');
@@ -82,104 +85,213 @@ class _EventTileState extends State<EventTile> {
 
   // shows a snackbar message at the bottom of the screen
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return GestureDetector(
-      onTap: () {
-        // navigate to event page
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EventPage(event: widget.event),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-        width: 280,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: SizedBox(
-                height: 150,
-                width: 400,
-                child: Image.asset(widget.event.imagePath, fit: BoxFit.cover),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 3, top: 6),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.event.title,
-                        style: textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColours.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        widget.event.price == 0.0
-                            ? "Free"
-                            : "\$${widget.event.price.toStringAsFixed(2)}",
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: AppColours.primary,
-                        ),
-                      ),
-                    ],
-                  ),
+    final day = widget.event.startTime.day.toString();
+    final month = _monthAbbr(widget.event.startTime.month);
+    final formattedTime =
+        "${widget.event.startTime.hour.toString().padLeft(2, '0')}:${widget.event.startTime.minute.toString().padLeft(2, '0')}";
 
-                  //RSVP Button - blue + or green tick for going
-                  GestureDetector(
-                    onTap: _onAddPressed,
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: _hasRsvped ? Colors.green : AppColours.primary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child:
-                          _hasRsvped //if else statement so when user presses + to rsvp, it changes blue box to green tick with going
-                          ? const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.check, color: Colors.white, size: 16),
-                                SizedBox(width: 4),
-                                Text(
-                                  "Going",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : const Icon(Icons.add, color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              EventPage(event: widget.event, userService: widget.userService),
+        ),
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.07),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── image with overlays ──
+            Stack(
+              children: [
+                // banner image
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: SizedBox(
+                    height: 160,
+                    width: double.infinity,
+                    child: Image.asset(
+                      widget.event.imagePath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: Colors.grey[200],
+                        child: const Center(
+                          child: Icon(
+                            Icons.event,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // date badge — bottom left
+                Positioned(
+                  bottom: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          month,
+                          style: TextStyle(
+                            color: AppColours.primary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          day,
+                          style: TextStyle(
+                            color: AppColours.primary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            height: 1.1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // ── text content ──
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // title
+                  Text(
+                    widget.event.title,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColours.primary,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  // description preview
+                  Text(
+                    widget.event.description,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[600],
+                      height: 1.4,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // bottom info row — location · time · price
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 13,
+                        color: Colors.grey[500],
+                      ),
+                      const SizedBox(width: 3),
+                      Expanded(
+                        child: Text(
+                          widget.event.location,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.access_time,
+                        size: 13,
+                        color: Colors.grey[500],
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        formattedTime,
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.attach_money,
+                        size: 13,
+                        color: Colors.grey[500],
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        widget.event.price == 0.0
+                            ? 'Free'
+                            : '\$${widget.event.price.toStringAsFixed(2)}',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ], 
+              ),
+            ), 
+          ], 
+        ),
       ),
     );
+  }
+
+  // helper to convert month int to abbreviation (looks pretty)
+  String _monthAbbr(int month) {
+    const months = [
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
+    ];
+    return months[month - 1];
   }
 }

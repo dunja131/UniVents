@@ -119,10 +119,10 @@ class _OptionPageState extends State<OptionPage> {
                    
                   Text(
                     'UniVents',
-                    style: GoogleFonts.montserrat(
+                    style: GoogleFonts.outfit(
                       fontSize: 52,
+                      fontWeight: FontWeight.w700,
                       color: Colors.black87,
-                      letterSpacing: 3,
                     ),
                   ),
 

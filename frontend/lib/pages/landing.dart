@@ -14,9 +14,22 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  List<Event>? events;
+  List<Event>? events; //this is the displayed list where a filter is applied
+  List<Event> _allEvents =
+      []; //this would be the never filtered full list of events
   var isLoaded = false;
   var hasError = false;
+
+  //Event filter categories for user to select if they want to filter events to specific category i.e. music/sports/free
+
+  int _selectedFilter = 0;
+  final List<String> _filters = [
+    'All',
+    'Music',
+    'Sports',
+    'Social',
+    'Free',
+  ]; //can add more to this, just what is easy & we will be mocking data anyway so can add events according to filters we want :)
 
   @override
   void initState() {
@@ -28,18 +41,31 @@ class _LandingPageState extends State<LandingPage> {
 
   Future<void> getData() async {
     try {
-      events = await EventService(widget.userService).getEvents();
-      if (events != null) {
+      final fetched = await EventService(widget.userService).getEvents();
+      if (fetched != null) {
         setState(() {
+          _allEvents = fetched; // master copy
+          events = fetched; // displayed list depending on filter
           isLoaded = true;
         });
       }
     } catch (e) {
       debugPrint('Error loading events: $e');
       setState(() {
-        hasError = true;   // triggers UI update
+        hasError = true;
       });
     }
+  }
+
+  void _applyFilters() {
+    setState(() {
+      events = _allEvents.where((event) {
+        final selectedFilter = _filters[_selectedFilter];
+        return selectedFilter == 'All' ||
+            (selectedFilter == 'Free' && event.price == 0) ||
+            event.category?.toLowerCase() == selectedFilter.toLowerCase();
+      }).toList();
+    });
   }
 
   @override
@@ -60,6 +86,41 @@ class _LandingPageState extends State<LandingPage> {
               Text('Search', style: TextStyle(color: Colors.white)),
               Icon(Icons.search, color: Colors.white),
             ],
+          ),
+        ),
+
+        SizedBox(
+          //filter UI chips
+          height: 40,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: _filters.length,
+            itemBuilder: (context, index) {
+              final isSelected = _selectedFilter == index;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: FilterChip(
+                  label: Text(_filters[index]),
+                  selected: isSelected,
+                  onSelected: (_) {
+                    setState(() => _selectedFilter = index);
+                    _applyFilters();
+                  },
+                  selectedColor: AppColours.primary,
+                  backgroundColor: AppColours.primary.withOpacity(0.1),
+                  side: BorderSide(color: AppColours.primary, width: 1),
+                  shape: StadiumBorder(),
+                  showCheckmark: false,
+                  labelStyle: TextStyle(
+                    color: isSelected ? Colors.white : AppColours.primary,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                ),
+              );
+            },
           ),
         ),
 
@@ -97,13 +158,14 @@ class _LandingPageState extends State<LandingPage> {
                   itemBuilder: (context, index) {
                     return EventTile(
                       event: events![index],
-                      userService: widget.userService, // pass userService down so can send token + userId to Springboot
+                      userService: widget
+                          .userService, // pass userService down so can send token + userId to Springboot
                     );
                   },
                 )
               : hasError
-                  ? const Center(child: Text('Failed to fetch events :('))
-                  : const Center(child: CircularProgressIndicator()),
+              ? const Center(child: Text('Failed to fetch events :('))
+              : const Center(child: CircularProgressIndicator()),
         ),
       ],
     );
