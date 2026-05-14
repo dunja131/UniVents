@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository; //gives us built-i
 import java.util.Optional; 
 
 public interface OrganiserRepository extends JpaRepository<Organiser, Long> {
-
+Optional<Organiser> findByOrganiserEmail(String organiserEmail);
 
     
 }

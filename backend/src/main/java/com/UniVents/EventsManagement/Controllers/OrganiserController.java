@@ -58,6 +58,37 @@ public class OrganiserController {
         return ResponseEntity.ok(organiserRepository.save(organiser));
     }
 
-    
+    // POST /organisers/signup
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(@RequestParam String firstName, @RequestParam String lastName,
+                       @RequestParam String email, @RequestParam String password) {
+        Organiser organiser = new Organiser();
+        organiser.setOrganiserName(firstName + " " + lastName);
+        organiser.setOrganiserEmail(email);
+        organiser.setOrganiserPassword(password);
+        organiser.setRole(Organiser.Role.ORGANISER);
+
+
+        if (organiserRepository.findByOrganiserEmail(organiser.getOrganiserEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use");
+        }
+        Organiser saved = organiserRepository.save(organiser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    // POST /organisers/login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Organiser loginRequest) {
+        Optional<Organiser> organiser = organiserRepository.findByOrganiserEmail(loginRequest.getOrganiserEmail());
+
+        if (organiser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Organiser not found");
+        }
+        if (!organiser.get().getOrganiserPassword().equals(loginRequest.getOrganiserPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
+        }
+
+        return ResponseEntity.ok(organiser.get());
+    }
 
     }
