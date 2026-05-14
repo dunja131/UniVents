@@ -77,19 +77,24 @@ class _LandingPageState extends State<LandingPage> {
                 ),
               ],
             ),
-            child: Row(
-              children: [
-                Icon(Icons.search, color: Colors.grey.shade400, size: 20),
-                const SizedBox(width: 10),
-                Text(
-                  'Search events...',
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 15),
-                ),
-              ],
-            ),
-          ),
-        ),
-
+               child: TextField(
+      onChanged: (value) async {
+        if (value.isEmpty) {
+          setState(() => events = _allEvents);
+        } else {
+          final results = await EventService(widget.userService).searchEvents(value);
+          setState(() => events = results ?? []);
+        }
+      },
+      decoration: InputDecoration(
+        icon: Icon(Icons.search, color: Colors.grey.shade400, size: 20),
+        hintText: 'Search events...',
+        hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 15),
+        border: InputBorder.none,
+      ),
+    ),
+  ),
+),
         // ── Filter chips ────────────────────────────────────────
         SizedBox(
           height: 40,
@@ -124,7 +129,7 @@ class _LandingPageState extends State<LandingPage> {
                       ),
                     ),
                     child: Text(
-                      _filters[index],
+                        _filters[index],
                       style: TextStyle(
                         color: isSelected ? Colors.white : Colors.grey.shade600,
                         fontWeight: isSelected

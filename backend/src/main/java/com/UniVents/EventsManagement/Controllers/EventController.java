@@ -101,7 +101,7 @@ public List<Event> getEventsByUser(@PathVariable Long userId) {
 
 @GetMapping("/search")
 public List<Event> searchEvents(@RequestParam String query) {
-    return eventRepository.findByTitleContainingIgnoreCase(query);
+    return eventRepository.findByEventNameContainingIgnoreCase(query);
 }
 
 }
