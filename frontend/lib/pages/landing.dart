@@ -4,6 +4,7 @@ import 'package:frontend/services/event_service.dart';
 import 'package:frontend/services/user_service.dart';
 import 'package:frontend/components/event_tile.dart';
 import 'package:frontend/theme/app_colours.dart';
+import 'package:frontend/pages/event.dart';
 
 class LandingPage extends StatefulWidget {
   final UserService userService;
@@ -14,28 +15,17 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  List<Event>? events; //this is the displayed list where a filter is applied
-  List<Event> _allEvents =
-      []; //this would be the never filtered full list of events
+  List<Event>? events;
+  List<Event> _allEvents = [];
   var isLoaded = false;
   var hasError = false;
 
-  //Event filter categories for user to select if they want to filter events to specific category i.e. music/sports/free
-
   int _selectedFilter = 0;
-  final List<String> _filters = [
-    'All',
-    'Music',
-    'Sports',
-    'Social',
-    'Free',
-  ]; //can add more to this, just what is easy & we will be mocking data anyway so can add events according to filters we want :)
+  final List<String> _filters = ['All', 'Music', 'Sports', 'Social', 'Free'];
 
   @override
   void initState() {
     super.initState();
-
-    // fetch data from api
     getData();
   }
 
@@ -44,16 +34,14 @@ class _LandingPageState extends State<LandingPage> {
       final fetched = await EventService(widget.userService).getEvents();
       if (fetched != null) {
         setState(() {
-          _allEvents = fetched; // master copy
-          events = fetched; // displayed list depending on filter
+          _allEvents = fetched;
+          events = fetched;
           isLoaded = true;
         });
       }
     } catch (e) {
       debugPrint('Error loading events: $e');
-      setState(() {
-        hasError = true;
-      });
+      setState(() => hasError = true);
     }
   }
 
@@ -71,26 +59,39 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // search bar
-        Container(
-          padding: const EdgeInsets.all(12),
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(
-            color: AppColours.primary,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Search', style: TextStyle(color: Colors.white)),
-              Icon(Icons.search, color: Colors.white),
-            ],
+        // ── Search bar ──────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.search, color: Colors.grey.shade400, size: 20),
+                const SizedBox(width: 10),
+                Text(
+                  'Search events...',
+                  style: TextStyle(color: Colors.grey.shade400, fontSize: 15),
+                ),
+              ],
+            ),
           ),
         ),
 
+        // ── Filter chips ────────────────────────────────────────
         SizedBox(
-          //filter UI chips
           height: 40,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -100,23 +101,38 @@ class _LandingPageState extends State<LandingPage> {
               final isSelected = _selectedFilter == index;
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: FilterChip(
-                  label: Text(_filters[index]),
-                  selected: isSelected,
-                  onSelected: (_) {
+                child: GestureDetector(
+                  onTap: () {
                     setState(() => _selectedFilter = index);
                     _applyFilters();
                   },
-                  selectedColor: AppColours.primary,
-                  backgroundColor: AppColours.primary.withOpacity(0.1),
-                  side: BorderSide(color: AppColours.primary, width: 1),
-                  shape: StadiumBorder(),
-                  showCheckmark: false,
-                  labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : AppColours.primary,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? const Color(0xFF1E2140)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isSelected
+                            ? const Color(0xFF1E2140)
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    child: Text(
+                      _filters[index],
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.grey.shade600,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ),
               );
@@ -124,42 +140,53 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ),
 
-        // upcoming events
+        // ── Upcoming Events header ──────────────────────────────
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
+              const Text(
                 'Upcoming Events',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColours.primary,
-                  fontWeight: FontWeight.bold,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1E2140),
                 ),
               ),
               Text(
                 'See all',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColours.primary,
-                  fontWeight: FontWeight.bold,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade400,
                 ),
               ),
             ],
           ),
         ),
 
-        const SizedBox(height: 10),
-
+        // ── Event list ──────────────────────────────────────────
         Expanded(
           child: isLoaded
               ? ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   itemCount: events!.length,
                   itemBuilder: (context, index) {
-                    return EventTile(
-                      event: events![index],
-                      userService: widget
-                          .userService, // pass userService down so can send token + userId to Springboot
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EventPage(
+                            event: events![index],
+                            userService: widget.userService,
+                          ),
+                        ),
+                      ),
+                      child: _EventCard(
+                        event: events![index],
+                        userService: widget.userService,
+                      ),
                     );
                   },
                 )
@@ -169,5 +196,193 @@ class _LandingPageState extends State<LandingPage> {
         ),
       ],
     );
+  }
+}
+
+// ── Event card with plain banner + icon ────────────────────
+class _EventCard extends StatelessWidget {
+  final Event event;
+  final UserService userService;
+
+  const _EventCard({required this.event, required this.userService});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // plain navy banner with icon + date badge
+          Stack(
+            children: [
+              Container(
+                height: 140,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF0F1F5), // soft pale grey,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.event_rounded, //event icon for all events
+                    size: 64,
+                    color: const Color.fromARGB(
+                      69,
+                      13,
+                      7,
+                      53,
+                    ).withValues(alpha: 0.35),
+                  ),
+                ),
+              ),
+              // date badge
+              Positioned(
+                bottom: 12,
+                left: 12,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        _monthAbbr(event.startTime),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF1E2140),
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      Text(
+                        _day(event.startTime),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF1E2140),
+                          height: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // event details
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  event.title ?? 'Untitled Event',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1E2140),
+                  ),
+                ),
+                if (event.description != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    event.description!,
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  ),
+                ],
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 13,
+                      color: Colors.grey.shade400,
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        event.location ?? '',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(
+                      Icons.access_time_rounded,
+                      size: 13,
+                      color: Colors.grey.shade400,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${event.startTime.hour.toString().padLeft(2, '0')}:${event.startTime.minute.toString().padLeft(2, '0')}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Icon(
+                      Icons.attach_money_rounded,
+                      size: 13,
+                      color: Colors.grey.shade400,
+                    ),
+                    Text(
+                      event.price == 0
+                          ? 'Free'
+                          : '\$${event.price?.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _monthAbbr(DateTime date) {
+    const months = [
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
+    ];
+    return months[date.month - 1];
+  }
+
+  String _day(DateTime date) {
+    return date.day.toString();
   }
 }

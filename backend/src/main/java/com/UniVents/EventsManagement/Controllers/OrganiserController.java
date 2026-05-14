@@ -36,15 +36,14 @@ public class OrganiserController {
 
     // POST /organisers - create an organiser
     @PostMapping
-    public ResponseEntity<Organiser> createOrganiser(@RequestBody Organiser organiser){
-        Organiser saved = organiserRepository.save(organiser); 
+    public ResponseEntity<Organiser> createOrganiser(@RequestBody Organiser organiser) {
+        Organiser saved = organiserRepository.save(organiser);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    //PUT /organisers/{id} - update an organiser (i.e. if needed to change email)
-
+    // PUT /organisers/{id} - update an organiser (i.e. if needed to change email)
     @PutMapping("/{id}")
-    public ResponseEntity<Organiser> updateOrganiser(@PathVariable Long id, @RequestBody Organiser updatedOrganiser){
+    public ResponseEntity<Organiser> updateOrganiser(@PathVariable Long id, @RequestBody Organiser updatedOrganiser) {
 
         Optional<Organiser> existingOrganiser = organiserRepository.findById(id);
 
@@ -57,11 +56,8 @@ public class OrganiserController {
         organiser.setOrganiserEmail(updatedOrganiser.getOrganiserEmail());
 
         return ResponseEntity.ok(organiserRepository.save(organiser));
-    }   
-
-}
-
-   
+    }
 
     
 
+    }

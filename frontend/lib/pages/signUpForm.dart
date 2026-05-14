@@ -7,10 +7,10 @@ class SignUpForm extends StatefulWidget {
   final bool isOrganiser;
 
   const SignUpForm({
-    super.key, 
+    super.key,
     this.onLogin,
     this.isOrganiser = false,
-    });
+  });
 
   @override
   SignUpFormState createState() => SignUpFormState();
@@ -49,7 +49,10 @@ class SignUpFormState extends State<SignUpForm> {
         password: _passwordController.text,
       );
 
-      final userService = UserService(_emailController.text, _passwordController.text);
+      final userService = UserService(
+        _emailController.text,
+        _passwordController.text,
+      );
       await userService.createUser(user);
       await userService.login();
 
@@ -71,6 +74,62 @@ class SignUpFormState extends State<SignUpForm> {
     }
   }
 
+  // reusable field builder to avoid repeating decoration code
+  Widget _buildField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    required String? Function(String?) validator,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            letterSpacing: 1.5,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade500,
+          ),
+        ),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          validator: validator,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(color: Colors.grey.shade400),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 18,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -78,63 +137,100 @@ class SignUpFormState extends State<SignUpForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
+          // FIRST NAME
+          _buildField(
+            label: 'FIRST NAME',
+            hint: 'Jane',
             controller: _firstNameController,
-            decoration: const InputDecoration(labelText: 'First Name'),
             validator: (value) {
-              if (value == null || value.isEmpty) return 'Name is required';
+              if (value == null || value.isEmpty) return 'First name is required';
               return null;
             },
           ),
-          TextFormField(
+
+          const SizedBox(height: 20),
+
+          // LAST NAME
+          _buildField(
+            label: 'LAST NAME',
+            hint: 'Smith',
             controller: _lastNameController,
-            decoration: const InputDecoration(labelText: 'Last Name'),
             validator: (value) {
-              if (value == null || value.isEmpty) return 'Name is required';
+              if (value == null || value.isEmpty) return 'Last name is required';
               return null;
             },
           ),
-          TextFormField(
+
+          const SizedBox(height: 20),
+
+          // EMAIL
+          _buildField(
+            label: 'EMAIL',
+            hint: 'you@student.otago.ac.nz',
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
+            keyboardType: TextInputType.emailAddress,
             validator: (value) {
               if (value == null || value.isEmpty) return 'Email is required';
               if (!value.contains('@')) return 'Enter a valid email';
               return null;
             },
           ),
-          TextFormField(
+
+          const SizedBox(height: 20),
+
+          // PASSWORD
+          _buildField(
+            label: 'PASSWORD',
+            hint: '••••••••',
             controller: _passwordController,
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
             validator: (value) {
               if (value == null || value.isEmpty) return 'Password is required';
               if (value.length < 6) return 'Password must be at least 6 characters';
               return null;
             },
           ),
-          TextFormField(
+
+          const SizedBox(height: 20),
+
+          // CONFIRM PASSWORD
+          _buildField(
+            label: 'CONFIRM PASSWORD',
+            hint: '••••••••',
             controller: _confirmPasswordController,
-            decoration: const InputDecoration(labelText: 'Confirm Password'),
-            obscureText: true,
             validator: (value) {
-              if (value == null || value.isEmpty) return 'Password is required';
+              if (value == null || value.isEmpty) return 'Please confirm your password';
               if (value != _passwordController.text) return 'Passwords do not match';
               return null;
             },
           ),
-          Padding(
-  padding: const EdgeInsets.symmetric(vertical: 16),
-  child: SizedBox(
-    width: double.infinity,
-    child: ElevatedButton(
-      onPressed: _isLoading ? null : _submit,
-      child: _isLoading
-          ? const CircularProgressIndicator(color: Colors.white)
-          : const Text('Sign up'),
-    ),
-  ),
-),
+
+          const SizedBox(height: 24),
+
+          // SIGN UP BUTTON
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _isLoading ? null : _submit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1E2140),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                elevation: 0,
+              ),
+              child: _isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text(
+                      'Create Account',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+            ),
+          ),
         ],
       ),
     );

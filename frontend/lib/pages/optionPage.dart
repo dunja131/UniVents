@@ -23,88 +23,121 @@ class _OptionPageState extends State<OptionPage> {
 
   // reusable toggle widget to avoid repeating code
   Widget _buildToggle({
-    required String leftLabel,
-    required String rightLabel,
-    required bool isLeft,
-    required VoidCallback onLeftTap,
-    required VoidCallback onRightTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: onLeftTap,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  color: isLeft ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: isLeft
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Text(
-                  leftLabel,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: isLeft ? AppColours.primary : Colors.grey,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+  required String leftLabel,
+  required IconData leftIcon,
+  required String rightLabel,
+  required IconData rightIcon,
+  required bool isLeft,
+  required VoidCallback onLeftTap,
+  required VoidCallback onRightTap,
+}) {
+  const activeColor = Color(0xFF1E2140); // dark navy
+  const inactiveColor = Color(0xFF9E9E9E); // grey
+
+  return Container(
+    padding: const EdgeInsets.all(4),
+    decoration: BoxDecoration(
+      color: Colors.grey.shade100,
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: Row(
+      children: [
+        // Left option - Student
+        Expanded(
+          child: GestureDetector(
+            onTap: onLeftTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: isLeft ? activeColor : Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: isLeft
+                    ? [
+                        BoxShadow(
+                          color: activeColor.withValues(alpha: 0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    leftIcon,
+                    size: 16,
+                    color: isLeft ? Colors.white : inactiveColor,
                   ),
-                ),
+                  const SizedBox(width: 6),
+                  Text(
+                    leftLabel,
+                    style: TextStyle(
+                      color: isLeft ? Colors.white : inactiveColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          Expanded(
-            child: GestureDetector(
-              onTap: onRightTap,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  color: !isLeft ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: !isLeft
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Text(
-                  rightLabel,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: !isLeft ? AppColours.primary : Colors.grey,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+        ),
+
+        // Right option - Organiser
+        Expanded(
+          child: GestureDetector(
+            onTap: onRightTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: !isLeft ? activeColor : Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: !isLeft
+                    ? [
+                        BoxShadow(
+                          color: activeColor.withValues(alpha: 0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    rightIcon,
+                    size: 16,
+                    color: !isLeft ? Colors.white : inactiveColor,
                   ),
-                ),
+                  const SizedBox(width: 6),
+                  Text(
+                    rightLabel,
+                    style: TextStyle(
+                      color: !isLeft ? Colors.white : inactiveColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF2F2F7),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -116,12 +149,11 @@ class _OptionPageState extends State<OptionPage> {
                 children: [
                   const SizedBox(height: 40),
 
-                   
                   Text(
                     'UniVents',
                     style: GoogleFonts.outfit(
                       fontSize: 52,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
                       color: Colors.black87,
                     ),
                   ),
@@ -136,21 +168,11 @@ class _OptionPageState extends State<OptionPage> {
                   const SizedBox(height: 40),
 
                   // role toggle - student vs organiser
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'I am a...',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey.shade500,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
                   _buildToggle(
                     leftLabel: 'Student',
+                    leftIcon: Icons.school_rounded,
                     rightLabel: 'Organiser',
+                    rightIcon: Icons.campaign_rounded,
                     isLeft: _isStudent,
                     onLeftTap: () => setState(() => _isStudent = true),
                     onRightTap: () => setState(() => _isStudent = false),

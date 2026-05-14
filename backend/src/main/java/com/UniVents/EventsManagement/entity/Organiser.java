@@ -31,6 +31,8 @@ public String getOrganiserName() {return organiserName;}
 public String getOrganiserEmail() {return organiserEmail;}
 public List<Event> getEvents() {return events;}
 
+
 public void setOrganiserName(String organiserName) {this.organiserName = organiserName;}
 public void setOrganiserEmail(String organiserEmail) {this.organiserEmail = organiserEmail;}
+
 }

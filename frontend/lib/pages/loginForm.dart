@@ -52,56 +52,132 @@ class LoginFormState extends State<LoginForm> {
     }
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
+          // EMAIL
+          Text(
+            'EMAIL',
+            style: TextStyle(
+              fontSize: 11,
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade500,
+            ),
+          ),
+          const SizedBox(height: 6),
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              icon: Icon(Icons.email_outlined),
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              hintText: 'you@student.otago.ac.nz',
+              hintStyle: TextStyle(color: Colors.grey.shade400),
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 18,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+              ),
             ),
             validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Email is required';
-              }
-              if (!value.contains('@')) {
-                return 'Enter a valid email';
-              }
+              if (value == null || value.isEmpty) return 'Email is required';
+              if (!value.contains('@')) return 'Enter a valid email';
               return null;
             },
           ),
+
+          const SizedBox(height: 20),
+
+          // PASSWORD
+          Text(
+            'PASSWORD',
+            style: TextStyle(
+              fontSize: 11,
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade500,
+            ),
+          ),
+          const SizedBox(height: 6),
           TextFormField(
             controller: _passwordController,
-            decoration: const InputDecoration(
-              labelText: 'Password',
-              icon: Icon(Icons.lock_outline),
+            decoration: InputDecoration(
+              hintText: '••••••••',
+              hintStyle: TextStyle(color: Colors.grey.shade400),
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 18,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+              ),
             ),
             validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Password is required';
-              }
-              // if(!value.contains('@')){
-              //   return 'Enter a valid pasword';
-              // }
+              if (value == null || value.isEmpty) return 'Password is required';
               return null;
             },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _submit,
-                child: _isLoading //this is to show a loading spinner
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Log in'),
+
+          const SizedBox(height: 24),
+
+          // SIGN IN BUTTON
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _isLoading ? null : _submit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1E2140),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                elevation: 0,
               ),
+              child: _isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
             ),
           ),
         ],
