@@ -20,7 +20,7 @@ class _LandingPageState extends State<LandingPage> {
   var isLoaded = false;
   var hasError = false;
 
-  int _selectedFilter = 0;
+  int _selectedFilter = 0; //variable to keep track of the list category positions
   final List<String> _filters = ['All', 'Music', 'Sports', 'Social', 'Free'];
 
   @override
@@ -46,13 +46,13 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _applyFilters() {
-    setState(() {
-      events = _allEvents.where((event) {
-        final selectedFilter = _filters[_selectedFilter];
-        return selectedFilter == 'All' ||
+    setState(() { // it redraws the screen
+      events = _allEvents.where((event) { //goes through the entire list of events
+        final selectedFilter = _filters[_selectedFilter]; // this fetches what category the user has selected
+        return selectedFilter == 'All' || 
             (selectedFilter == 'Free' && event.price == 0) ||
-            event.category?.toLowerCase() == selectedFilter.toLowerCase();
-      }).toList();
+            event.category?.toLowerCase() == selectedFilter.toLowerCase(); // checks if the event category matches the selected chip, case-insensitive so "Sports" and "sports" both match
+      }).toList(); //turns the filtered category of events into a list that flutter that can rebuild and re-present it to the user on the landing page
     });
   }
 

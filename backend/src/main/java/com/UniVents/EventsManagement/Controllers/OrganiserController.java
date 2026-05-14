@@ -58,9 +58,9 @@ public class OrganiserController {
         return ResponseEntity.ok(organiserRepository.save(organiser));
     }
 
-    // POST /organisers/signup
-    @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestParam String firstName, @RequestParam String lastName,
+    // POST /organisers/register
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestParam String firstName, @RequestParam String lastName,
                        @RequestParam String email, @RequestParam String password) {
         Organiser organiser = new Organiser();
         organiser.setOrganiserName(firstName + " " + lastName);

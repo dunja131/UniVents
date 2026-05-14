@@ -47,7 +47,6 @@ public UserController (UserRepository userRepository, BCryptPasswordEncoder pass
             newUser.setLastName(lastName);
             newUser.setEmail(email);
             newUser.setPasswordHash(passwordEncoder.encode(password));
-            newUser.setRole(Role.STUDENT);
             
            User saved = userRepository.save(newUser);
 

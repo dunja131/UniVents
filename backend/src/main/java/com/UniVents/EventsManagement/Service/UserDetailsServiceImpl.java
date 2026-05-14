@@ -10,8 +10,10 @@ import com.UniVents.EventsManagement.entity.Organiser;
 import com.UniVents.EventsManagement.repository.OrganiserRepository;
 import com.UniVents.EventsManagement.repository.UserRepository;
 
-//@Serivce commented out because identical serice?
-//@Service
+import org.springframework.stereotype.Service;
+
+
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository repo;

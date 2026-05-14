@@ -34,19 +34,19 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    UserDetailsService userDetailsService(UserRepository repo) {
-        return username -> {
-            User user = repo.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    // @Bean
+    // UserDetailsService userDetailsService(UserRepository repo) {
+    //     return username -> {
+    //         User user = repo.findByEmail(username)
+    //             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
-                .password(user.getPasswordHash())
-                .roles("USER")
-                .build();
-        };
-    }
+    //         return org.springframework.security.core.userdetails.User.builder()
+    //             .username(user.getEmail())
+    //             .password(user.getPasswordHash())
+    //             .roles("USER")
+    //             .build();
+    //     };
+    // }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -76,9 +76,10 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/auth/**").permitAll() //login - open to everyone
-                .requestMatchers("/users/register").permitAll()   // register - open to everyone
+                .requestMatchers("/users/register").permitAll()   // student register - open to everyone
+                .requestMatchers("/organisers/register").permitAll() //organiser register - open to everyone
                 .requestMatchers("/api/**").authenticated() //all api routes (i.e. rsvp) need token
-                .requestMatchers("/organisers/login").permitAll() 
+                .requestMatchers("/organisers/login").permitAll() //organiser login - open to everyone
                 .requestMatchers("/users/**").authenticated() //all user routes need token
                 .requestMatchers("/events/**").authenticated() // all event routes need token
                 .anyRequest().permitAll()

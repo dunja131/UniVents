@@ -19,15 +19,6 @@ public class User {
 @Column (name = "user_id")
 private Long userId; 
 
-/** Separate roles between students and organisers */
-public enum Role{
-STUDENT, ORGANISER
-}
-
-@Enumerated(EnumType.STRING)
-@Column(name = "role", nullable = true) //setting to true to allow db to create role
-private Role role = Role.STUDENT; //currently defaulting to student
-
 @Column(name = "first_name", nullable = false, length = 100)
 private String firstName;
 
@@ -50,7 +41,7 @@ private String passwordHash;
     public String getLastName() { return lastName; }
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
-    public Role getRole() { return role; }
+
 
 //Setters
     public void setUserId(Long userId) { this.userId = userId; }
@@ -58,5 +49,5 @@ private String passwordHash;
     public void setLastName(String lastName) { this.lastName = lastName; }
     public void setEmail(String email) { this.email = email; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-    public void setRole(Role role) { this.role = role; }
+
 }
