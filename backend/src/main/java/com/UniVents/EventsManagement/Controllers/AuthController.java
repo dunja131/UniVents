@@ -24,13 +24,18 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         try {
             Authentication auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(body.get("email"), body.get("password"))
             );
             String token = jwtUtil.generateToken(auth.getName());
-            return ResponseEntity.ok(token);
+            String role = auth.getAuthorities().iterator().next().getAuthority(); // adding this allows springboot to assign role based on what table the person logging in belongs to (user vs organiser)
+
+            return ResponseEntity.ok(Map.of(
+                "token", token,
+                "role", role
+            ));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }

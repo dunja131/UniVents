@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.UniVents.EventsManagement.entity.User;
-import com.UniVents.EventsManagement.entity.User.Role;
 import com.UniVents.EventsManagement.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;

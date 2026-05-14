@@ -11,12 +11,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 @RestController
 @RequestMapping("/organisers")
 public class OrganiserController {
 
-    @Autowired
+    // @Autowired
     private OrganiserRepository organiserRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public OrganiserController(OrganiserRepository organiserRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.organiserRepository = organiserRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // GET /organisers - all organisers
     @GetMapping
@@ -61,13 +72,11 @@ public class OrganiserController {
     // POST /organisers/register
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestParam String firstName, @RequestParam String lastName,
-                       @RequestParam String email, @RequestParam String password) {
+            @RequestParam String email, @RequestParam String password) {
         Organiser organiser = new Organiser();
         organiser.setOrganiserName(firstName + " " + lastName);
         organiser.setOrganiserEmail(email);
-        organiser.setOrganiserPassword(password);
-        organiser.setRole(Organiser.Role.ORGANISER);
-
+        organiser.setOrganiserPassword(passwordEncoder.encode(password));
 
         if (organiserRepository.findByOrganiserEmail(organiser.getOrganiserEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use");
@@ -91,4 +100,13 @@ public class OrganiserController {
         return ResponseEntity.ok(organiser.get());
     }
 
+    @GetMapping("/my-profile")
+    public Organiser getOrganiserProfile(Authentication authentication) {
+        String email = authentication.getName();
+
+        return organiserRepository.findByOrganiserEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Organiser not found"));
+
     }
+
+}

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:http/http.dart' as http;
 
-
 class UserService {
-  static const String _baseUrl = 'http://localhost:8080';//'http://10.0.2.2:8080';
+  static const String _baseUrl =
+      'http://localhost:8080'; //'http://10.0.2.2:8080';
   final String _email;
   final String _password;
   User? _currentUser;
@@ -33,9 +33,7 @@ class UserService {
     throw Exception('Failed to load users (${response.statusCode})');
   }
 
-
-   Future<User> login() async {
-    // Step 1: get JWT token
+  Future<User> login() async {
     final tokenResponse = await http.post(
       Uri.parse('$_baseUrl/api/auth/login'),
       headers: {'Content-Type': 'application/json'},
@@ -46,15 +44,25 @@ class UserService {
       throw Exception('Failed to login (${tokenResponse.statusCode})');
     }
 
-    _token = tokenResponse.body;
+    //this reads the token and role received by backend when attempting to login
+    final body = jsonDecode(tokenResponse.body);
+    _token = body['token'];
+    final role = body['role'];
 
-    // Step 2: fetch user profile using the token
+    //this determines whether the person logging in is considered organiser otherwise general user
+    // and calls the correct profile endpoint based on the role
+    final profileUrl = role == 'ROLE_ORGANISER'
+        ? '$_baseUrl/organisers/my-profile'
+        : '$_baseUrl/users/my-profile';
+
+    // then it fetches the user profile based on the role and token allocated to it
+    //lets spring security know who is making the request
     final profileResponse = await http.get(
-      Uri.parse('$_baseUrl/users/my-profile'),
+      Uri.parse(profileUrl),
       headers: {'Authorization': authHeader},
     );
 
-    debugPrint('Profile response: ${profileResponse.statusCode}'); 
+    debugPrint('Profile response: ${profileResponse.statusCode}');
     debugPrint('Profile body: ${profileResponse.body}');
 
     if (profileResponse.statusCode == 200) {
@@ -78,12 +86,14 @@ class UserService {
   }
 
   Future<void> createUser(User user) async {
-    final uri = Uri.parse('$_baseUrl/users/register').replace(queryParameters: {
-      'firstName': user.firstName,
-      'lastName': user.lastName,
-      'email': user.email,
-      'password': user.password,
-    });
+    final uri = Uri.parse('$_baseUrl/users/register').replace(
+      queryParameters: {
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'email': user.email,
+        'password': user.password,
+      },
+    );
     final response = await http.post(uri);
     if (response.statusCode == 409) {
       throw Exception('An account with that email already exists');

@@ -82,6 +82,7 @@ public class SecurityConfig {
                 .requestMatchers("/organisers/login").permitAll() //organiser login - open to everyone
                 .requestMatchers("/users/**").authenticated() //all user routes need token
                 .requestMatchers("/events/**").authenticated() // all event routes need token
+                .requestMatchers("/organisers/my-profile").authenticated()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form.disable())
