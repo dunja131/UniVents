@@ -50,6 +50,18 @@ class EventService {
     }
   }
 
+   Future<List<Event>?> searchEvents(String query) async {
+  final response = await http.get(
+    Uri.parse('$_baseUrl/events/search?query=$query'),
+    headers: {'Authorization': _userService.authHeader},
+  );
+  if (response.statusCode == 200) {
+    final List data = jsonDecode(response.body);
+    return data.map((e) => Event.fromJson(e)).toList();
+  }
+  return null;
+} 
+
 
 //  // Get evevnts by user id
 //   Future<List<Event>> getEventsByUser() async {

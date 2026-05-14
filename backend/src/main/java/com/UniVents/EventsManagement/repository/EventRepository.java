@@ -11,4 +11,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     //springboot maps this as search where category matches passed in category
     List<Event> findByCategoryIgnoreCase(String category); 
     
+List<Event> findByEventNameContainingIgnoreCase(String eventName);
 }
