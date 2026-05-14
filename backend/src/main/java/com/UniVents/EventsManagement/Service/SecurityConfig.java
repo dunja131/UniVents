@@ -76,8 +76,9 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/auth/**").permitAll() //login - open to everyone
-                  .requestMatchers("/users/register").permitAll()   // register - open to everyone
+                .requestMatchers("/users/register").permitAll()   // register - open to everyone
                 .requestMatchers("/api/**").authenticated() //all api routes (i.e. rsvp) need token
+                .requestMatchers("/organisers/login").permitAll() 
                 .requestMatchers("/users/**").authenticated() //all user routes need token
                 .requestMatchers("/events/**").authenticated() // all event routes need token
                 .anyRequest().permitAll()
