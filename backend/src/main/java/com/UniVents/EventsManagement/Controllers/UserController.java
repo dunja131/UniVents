@@ -11,11 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.UniVents.EventsManagement.entity.User;
 import com.UniVents.EventsManagement.entity.User.Role;
 import com.UniVents.EventsManagement.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 // controls user related requests in login and signup. 
 @RestController
 

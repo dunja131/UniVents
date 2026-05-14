@@ -36,15 +36,14 @@ public class OrganiserController {
 
     // POST /organisers - create an organiser
     @PostMapping
-    public ResponseEntity<Organiser> createOrganiser(@RequestBody Organiser organiser){
-        Organiser saved = organiserRepository.save(organiser); 
+    public ResponseEntity<Organiser> createOrganiser(@RequestBody Organiser organiser) {
+        Organiser saved = organiserRepository.save(organiser);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    //PUT /organisers/{id} - update an organiser (i.e. if needed to change email)
-
+    // PUT /organisers/{id} - update an organiser (i.e. if needed to change email)
     @PutMapping("/{id}")
-    public ResponseEntity<Organiser> updateOrganiser(@PathVariable Long id, @RequestBody Organiser updatedOrganiser){
+    public ResponseEntity<Organiser> updateOrganiser(@PathVariable Long id, @RequestBody Organiser updatedOrganiser) {
 
         Optional<Organiser> existingOrganiser = organiserRepository.findById(id);
 
@@ -57,11 +56,39 @@ public class OrganiserController {
         organiser.setOrganiserEmail(updatedOrganiser.getOrganiserEmail());
 
         return ResponseEntity.ok(organiserRepository.save(organiser));
-    }   
+    }
 
-}
+    // POST /organisers/signup
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(@RequestParam String firstName, @RequestParam String lastName,
+                       @RequestParam String email, @RequestParam String password) {
+        Organiser organiser = new Organiser();
+        organiser.setOrganiserName(firstName + " " + lastName);
+        organiser.setOrganiserEmail(email);
+        organiser.setOrganiserPassword(password);
+        organiser.setRole(Organiser.Role.ORGANISER);
 
-   
 
-    
+        if (organiserRepository.findByOrganiserEmail(organiser.getOrganiserEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use");
+        }
+        Organiser saved = organiserRepository.save(organiser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
 
+    // POST /organisers/login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Organiser loginRequest) {
+        Optional<Organiser> organiser = organiserRepository.findByOrganiserEmail(loginRequest.getOrganiserEmail());
+
+        if (organiser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Organiser not found");
+        }
+        if (!organiser.get().getOrganiserPassword().equals(loginRequest.getOrganiserPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
+        }
+
+        return ResponseEntity.ok(organiser.get());
+    }
+
+    }
