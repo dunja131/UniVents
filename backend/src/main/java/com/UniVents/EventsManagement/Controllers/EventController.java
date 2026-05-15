@@ -18,47 +18,52 @@ import org.springframework.web.bind.annotation.RestController;
 import com.UniVents.EventsManagement.entity.Event;
 import com.UniVents.EventsManagement.repository.EventRepository;
 
-import org.springframework.web.bind.annotation.RequestParam; 
+import org.springframework.web.bind.annotation.RequestParam;
 
-
-@RestController  // tells Spring this class handles HTTP requests
+@RestController // tells Spring this class handles HTTP requests
 @RequestMapping("/events") //
-public class EventController{
+public class EventController {
 
-@Autowired 
-private EventRepository eventRepository; //connects to the database
+    @Autowired
+    private EventRepository eventRepository; // connects to the database
 
-    // GET /events - all events 
+    // GET /events - all events
     // updated 12/05 so that it now accepts an optional category as param
-    // No category in param = just return everything, otherwise return the filtered category events result
+    // No category in param = just return everything, otherwise return the filtered
+    // category events result
     @GetMapping
-   public List<Event> getAllEvents(@RequestParam(required = false) String category) {
-    if (category == null || category.isBlank()) {
-        return eventRepository.findAll();
+    public List<Event> getAllEvents(@RequestParam(required = false) String category) {
+        if (category == null || category.isBlank()) {
+            return eventRepository.findAll();
+        }
+        return eventRepository.findByCategoryIgnoreCase(category);
     }
-    return eventRepository.findByCategoryIgnoreCase(category);
-}
+
+    // GET /events/search 
+    @GetMapping("/search")
+    public List<Event> searchEvents(@RequestParam String query) {
+        return eventRepository.findByEventNameContainingIgnoreCase(query);
+    }
 
     // GET /one event
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Long id){
+    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
         Optional<Event> event = eventRepository.findById(id);
         return event.map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
-
     @PostMapping
-    public Event createEvent(@RequestBody Event event){
+    public Event createEvent(@RequestBody Event event) {
         event.setCreatedAt(LocalDateTime.now());
         return eventRepository.save(event);
     }
 
     // PUT /events/{id} - update event (organisers)
     @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event updatedEvent){
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event updatedEvent) {
         // look for the event in the database
-        Optional<Event> existingEvent = eventRepository.findById(id); //using Optional to safely wrap it
+        Optional<Event> existingEvent = eventRepository.findById(id); // using Optional to safely wrap it
 
         // if not found, return 404
         if (existingEvent.isEmpty()) {
@@ -67,7 +72,7 @@ private EventRepository eventRepository; //connects to the database
 
         // get the actual event out of the Optional
         Event event = existingEvent.get();
-        
+
         // overwrite the old data with the new data
         event.setEventName(updatedEvent.getEventName());
         event.setPrice(updatedEvent.getPrice());
@@ -78,32 +83,22 @@ private EventRepository eventRepository; //connects to the database
 
         // save and return it
         return ResponseEntity.ok(eventRepository.save(event));
-}
-
-
-@DeleteMapping("/{id}")
-public ResponseEntity<Void> deleteEvent(@PathVariable Long id){
-
- if (!eventRepository.existsById(id)) {
-        return ResponseEntity.notFound().build(); //return status code with no data
     }
-    eventRepository.deleteById(id);
-    return ResponseEntity.noContent().build(); //return 204 successful deletion
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+
+        if (!eventRepository.existsById(id)) {
+            return ResponseEntity.notFound().build(); // return status code with no data
+        }
+        eventRepository.deleteById(id);
+        return ResponseEntity.noContent().build(); // return 204 successful deletion
+    }
+
+    // GET /events/user/{userId} - get all events user has RSVPd to
+    @GetMapping("/user/{userId}")
+    public List<Event> getEventsByUser(@PathVariable Long userId) {
+        return eventRepository.findByRsvps_User_UserId(userId);
+    }
+
 }
-
-
-// GET /events/user/{userId} - get all events user has RSVPd to
-@GetMapping("/user/{userId}")
-public List<Event> getEventsByUser(@PathVariable Long userId) {
-    return eventRepository.findByRsvps_User_UserId(userId);
-}
-
-
-@GetMapping("/search")
-public List<Event> searchEvents(@RequestParam String query) {
-    return eventRepository.findByEventNameContainingIgnoreCase(query);
-}
-
-}
-
-

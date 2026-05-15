@@ -54,6 +54,8 @@ class LoginFormState extends State<LoginForm> {
 
    @override
   Widget build(BuildContext context) {
+
+     final colorScheme = Theme.of(context).colorScheme;
     return Form(
       key: _formKey,
       child: Column(
@@ -161,8 +163,8 @@ class LoginFormState extends State<LoginForm> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _submit,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1E2140),
-                foregroundColor: Colors.white,
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
                 padding: const EdgeInsets.symmetric(vertical: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),

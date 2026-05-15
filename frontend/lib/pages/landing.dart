@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/event_model.dart';
 import 'package:frontend/services/event_service.dart';
 import 'package:frontend/services/user_service.dart';
-import 'package:frontend/components/event_tile.dart';
-import 'package:frontend/theme/app_colours.dart';
+import 'package:frontend/theme/app_theme.dart';
 import 'package:frontend/pages/event.dart';
 
 class LandingPage extends StatefulWidget {
@@ -20,7 +19,8 @@ class _LandingPageState extends State<LandingPage> {
   var isLoaded = false;
   var hasError = false;
 
-  int _selectedFilter = 0; //variable to keep track of the list category positions
+  int _selectedFilter =
+      0; //variable to keep track of the list category positions
   final List<String> _filters = ['All', 'Music', 'Sports', 'Social', 'Free'];
 
   @override
@@ -46,18 +46,25 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _applyFilters() {
-    setState(() { // it redraws the screen
-      events = _allEvents.where((event) { //goes through the entire list of events
-        final selectedFilter = _filters[_selectedFilter]; // this fetches what category the user has selected
-        return selectedFilter == 'All' || 
+    setState(() {
+      // it redraws the screen
+      events = _allEvents.where((event) {
+        //goes through the entire list of events
+        final selectedFilter =
+            _filters[_selectedFilter]; // this fetches what category the user has selected
+        return selectedFilter == 'All' ||
             (selectedFilter == 'Free' && event.price == 0) ||
-            event.category?.toLowerCase() == selectedFilter.toLowerCase(); // checks if the event category matches the selected chip, case-insensitive so "Sports" and "sports" both match
+            event.category?.toLowerCase() ==
+                selectedFilter
+                    .toLowerCase(); // checks if the event category matches the selected chip, case-insensitive so "Sports" and "sports" both match
       }).toList(); //turns the filtered category of events into a list that flutter that can rebuild and re-present it to the user on the landing page
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -65,10 +72,10 @@ class _LandingPageState extends State<LandingPage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
+              color: colorScheme.surfaceContainer,
+              borderRadius: BorderRadius.circular(30),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.06),
@@ -77,24 +84,37 @@ class _LandingPageState extends State<LandingPage> {
                 ),
               ],
             ),
-               child: TextField(
-      onChanged: (value) async {
-        if (value.isEmpty) {
-          setState(() => events = _allEvents);
-        } else {
-          final results = await EventService(widget.userService).searchEvents(value);
-          setState(() => events = results ?? []);
-        }
-      },
-      decoration: InputDecoration(
-        icon: Icon(Icons.search, color: Colors.grey.shade400, size: 20),
-        hintText: 'Search events...',
-        hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 15),
-        border: InputBorder.none,
-      ),
-    ),
-  ),
-),
+            child: TextField(
+              onChanged: (value) async {
+                if (value.isEmpty) {
+                  setState(() => events = _allEvents);
+                } else {
+                  final results = await EventService(
+                    widget.userService,
+                  ).searchEvents(value);
+                  setState(() => events = results ?? []);
+                }
+              },
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.search,
+                  color: colorScheme.onSurfaceVariant,
+                  size: 20,
+                ),
+                hintText: 'Search events...',
+                hintStyle: TextStyle(
+                  color: colorScheme.onSurfaceVariant,
+                  fontSize: 15,
+                ),
+                filled: false,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+              ),
+            ),
+          ),
+        ),
+
         // ── Filter chips ────────────────────────────────────────
         SizedBox(
           height: 40,
@@ -119,19 +139,21 @@ class _LandingPageState extends State<LandingPage> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color(0xFF1E2140)
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                          ? colorScheme.primary
+                          : colorScheme.surface,
+                      borderRadius: BorderRadius.circular(30),
                       border: Border.all(
                         color: isSelected
-                            ? const Color(0xFF1E2140)
-                            : Colors.grey.shade300,
+                            ? colorScheme.primary
+                            : colorScheme.outline,
                       ),
                     ),
                     child: Text(
-                        _filters[index],
+                      _filters[index],
                       style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.grey.shade600,
+                        color: isSelected
+                            ? colorScheme.onPrimary
+                            : colorScheme.onSurfaceVariant,
                         fontWeight: isSelected
                             ? FontWeight.w600
                             : FontWeight.normal,
@@ -151,22 +173,22 @@ class _LandingPageState extends State<LandingPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Upcoming Events',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1E2140),
+                  color: colorScheme.onSurface,
                 ),
               ),
-              Text(
-                'See all',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade400,
-                ),
-              ),
+              // Text(
+              //   'See all',
+              //   style: TextStyle(
+              //     fontSize: 14,
+              //     fontWeight: FontWeight.w600,
+              //     color: Colors.grey.shade400,
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -213,10 +235,12 @@ class _EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -229,25 +253,19 @@ class _EventCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // plain navy banner with icon + date badge
           Stack(
             children: [
               Container(
                 height: 140,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF0F1F5), // soft pale grey,
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
                 child: Center(
                   child: Icon(
                     Icons.event_rounded, //event icon for all events
                     size: 64,
-                    color: const Color.fromARGB(
-                      69,
-                      13,
-                      7,
-                      53,
-                    ).withValues(alpha: 0.35),
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.35),
                   ),
                 ),
               ),
@@ -261,26 +279,26 @@ class _EventCard extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    color: colorScheme.surface,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
                     children: [
                       Text(
                         _monthAbbr(event.startTime),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF1E2140),
+                          color: colorScheme.onSurface,
                           letterSpacing: 1,
                         ),
                       ),
                       Text(
                         _day(event.startTime),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1E2140),
+                          color: colorScheme.onSurface,
                           height: 1,
                         ),
                       ),
@@ -299,17 +317,20 @@ class _EventCard extends StatelessWidget {
               children: [
                 Text(
                   event.title ?? 'Untitled Event',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF1E2140),
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 if (event.description != null) ...[
                   const SizedBox(height: 4),
                   Text(
                     event.description!,
-                    style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
                 const SizedBox(height: 10),
@@ -318,7 +339,7 @@ class _EventCard extends StatelessWidget {
                     Icon(
                       Icons.location_on_outlined,
                       size: 13,
-                      color: Colors.grey.shade400,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
@@ -326,7 +347,7 @@ class _EventCard extends StatelessWidget {
                         event.location ?? '',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade500,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -334,29 +355,29 @@ class _EventCard extends StatelessWidget {
                     Icon(
                       Icons.access_time_rounded,
                       size: 13,
-                      color: Colors.grey.shade400,
+                     color: colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       '${event.startTime.hour.toString().padLeft(2, '0')}:${event.startTime.minute.toString().padLeft(2, '0')}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade500,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(width: 12),
                     Icon(
                       Icons.attach_money_rounded,
                       size: 13,
-                      color: Colors.grey.shade400,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                     Text(
                       event.price == 0
                           ? 'Free'
-                          : '\$${event.price?.toStringAsFixed(2)}',
+                          : '${event.price?.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade500,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],

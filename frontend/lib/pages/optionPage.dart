@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/pages/loginForm.dart';
 import 'package:frontend/pages/signUpForm.dart';
 import 'package:frontend/services/user_service.dart';
-import 'package:frontend/theme/app_colours.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 
 class OptionPage extends StatefulWidget {
   final void Function(UserService)? onLogin;
@@ -16,6 +16,7 @@ class OptionPage extends StatefulWidget {
 class _OptionPageState extends State<OptionPage> {
   bool _isLogin = true;
   bool _isStudent = true; //tracks whether user is student or organiser
+  
 
   void _toggleMode() {
     setState(() => _isLogin = !_isLogin);
@@ -23,6 +24,7 @@ class _OptionPageState extends State<OptionPage> {
 
   // reusable toggle widget to avoid repeating code
   Widget _buildToggle({
+  required ColorScheme colorScheme,
   required String leftLabel,
   required IconData leftIcon,
   required String rightLabel,
@@ -31,8 +33,8 @@ class _OptionPageState extends State<OptionPage> {
   required VoidCallback onLeftTap,
   required VoidCallback onRightTap,
 }) {
-  const activeColor = Color(0xFF1E2140); // dark navy
-  const inactiveColor = Color(0xFF9E9E9E); // grey
+  final activeColor = colorScheme.primary;
+ final inactiveColor = colorScheme.onSurfaceVariant;
 
   return Container(
     padding: const EdgeInsets.all(4),
@@ -136,8 +138,11 @@ class _OptionPageState extends State<OptionPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F7),
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -154,21 +159,22 @@ class _OptionPageState extends State<OptionPage> {
                     style: GoogleFonts.outfit(
                       fontSize: 52,
                       fontWeight: FontWeight.w800,
-                      color: Colors.black87,
+                      color: colorScheme.onSurface,
                     ),
                   ),
 
                   const SizedBox(height: 8),
                   Text(
                     'Discover events happening on campus',
-                    style: TextStyle(fontSize: 15, color: Colors.grey.shade500),
+                    style: TextStyle(fontSize: 15, color: colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
 
                   const SizedBox(height: 40),
 
-                  // role toggle - student vs organiser
+                  
                   _buildToggle(
+                    colorScheme: colorScheme,
                     leftLabel: 'Student',
                     leftIcon: Icons.school_rounded,
                     rightLabel: 'Organiser',

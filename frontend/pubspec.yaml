@@ -38,8 +38,10 @@ dependencies:
   google_fonts: ^8.0.2
   syncfusion_flutter_calendar: ^33.1.49
   http: ^1.2.0
-
-
+  table_calendar: ^3.1.2
+  flex_color_scheme: ^8.4.0
+  settings_ui: ^3.0.1
+  flutter_svg: ^2.0.0
 
 dev_dependencies:
   flutter_test:

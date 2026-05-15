@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/theme/app_theme.dart';
 import 'home_page.dart';
 
+
+
 void main() {
   runApp(const MyApp());
 }
@@ -14,7 +16,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'UniVents',
-      theme: AppTheme.theme,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.light,
       home: HomePage(),
     );
   }

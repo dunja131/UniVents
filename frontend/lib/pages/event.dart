@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/event_model.dart';
-import 'package:frontend/theme/app_colours.dart';
 import 'package:frontend/services/rsvp_service.dart';
 import 'package:frontend/services/user_service.dart';
 
@@ -46,18 +45,13 @@ class _EventPageState extends State<EventPage> {
   }
 
   Future<void> _createRsvp() async {
-    await _rsvpService.createRsvp(
-      eventId: widget.event.eventId,
-      status: "GOING",
-    );
+    await _rsvpService.createRsvp(eventId: widget.event.eventId, status: "GOING");
     setState(() => _hasRsvped = true);
     _showSnackBar("RSVP successful!");
   }
 
   Future<void> _removeRsvp() async {
-    final int? rsvpId = await _rsvpService.getRsvpId(
-      eventId: widget.event.eventId,
-    );
+    final int? rsvpId = await _rsvpService.getRsvpId(eventId: widget.event.eventId);
     if (rsvpId != null) {
       await _rsvpService.deleteRsvp(rsvpId: rsvpId);
       setState(() => _hasRsvped = false);
@@ -66,13 +60,12 @@ class _EventPageState extends State<EventPage> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
     final formattedDate =
@@ -83,96 +76,123 @@ class _EventPageState extends State<EventPage> {
         "${widget.event.endTime.hour.toString().padLeft(2, '0')}:${widget.event.endTime.minute.toString().padLeft(2, '0')}";
 
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          widget.event.title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: AppColours.primary,
-      ),
+      backgroundColor: colorScheme.surface,
 
+      // ── RSVP button ──
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         child: ElevatedButton(
           onPressed: _onRsvpPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: _hasRsvped ? Colors.green : AppColours.primary,
+            backgroundColor: _hasRsvped
+                ? colorScheme.errorContainer
+                : colorScheme.primary,
+            foregroundColor: _hasRsvped
+                ? colorScheme.onErrorContainer
+                : colorScheme.onPrimary,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
             ),
           ),
           child: Text(
-            _hasRsvped ? 'Cancel RSVP' : 'RSVP',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            _hasRsvped ? 'Cancel RSVP' : 'RSVP to this event',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ),
 
- body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // banner image
-            SizedBox(
-              height: 220,
-              width: double.infinity,
-              child: widget.event.imagePath.isNotEmpty
+      body: CustomScrollView(
+        slivers: [
+          // ── Collapsing app bar with image ──
+          SliverAppBar(
+            expandedHeight: 280,
+            pinned: true,
+            backgroundColor: colorScheme.primary,
+            iconTheme: IconThemeData(color: colorScheme.onPrimary),
+            flexibleSpace: FlexibleSpaceBar(
+              // title: Text(
+              //   widget.event.title,
+              //   style: TextStyle(
+              //     color: colorScheme.onPrimary,
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 16,
+              //   ),
+              // ),
+              
+              background: widget.event.imagePath.isNotEmpty
                   ? Image.asset(
                       widget.event.imagePath,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _imageFallback(),
+                      errorBuilder: (_, __, ___) => _imageFallback(colorScheme),
                     )
-                  : _imageFallback(),
+                  : _imageFallback(colorScheme),
             ),
+          ),
 
-            Padding(
-              padding: const EdgeInsets.all(16),
+          // ── Content ──
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
+                  // category chip
+                  if (widget.event.category != null) ...[
+                    Chip(
+                      label: Text(widget.event.category!),
+                      backgroundColor: colorScheme.primaryContainer,
+                      labelStyle: TextStyle(
+                        color: colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+
                   // title
                   Text(
                     widget.event.title,
                     style: textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColours.primary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
 
-                  const SizedBox(height: 16),
-                  const Divider(),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 20),
 
-                  // info rows
-                  _infoRow(Icons.calendar_today, formattedDate),
-                  _infoRow(Icons.access_time, "$formattedTime – $formattedEnd"),
-                  _infoRow(Icons.location_on, widget.event.location),
-                  _infoRow(
-                    Icons.attach_money,
-                    widget.event.price == 0.0
-                        ? 'Free'
-                        : '\$${widget.event.price.toStringAsFixed(2)}',
+                  // ── Info card ──
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        _infoRow(context, Icons.calendar_today, formattedDate),
+                        _infoRow(context, Icons.access_time, "$formattedTime – $formattedEnd"),
+                        _infoRow(context, Icons.location_on, widget.event.location),
+                        _infoRow(
+                          context,
+                          Icons.attach_money,
+                          widget.event.price == 0.0
+                              ? 'Free'
+                              : widget.event.price.toStringAsFixed(2),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  const SizedBox(height: 8),
-                  const Divider(),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 24),
 
-                  // description
+                  // ── About section ──
                   Text(
                     'About this event',
                     style: textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -180,41 +200,47 @@ class _EventPageState extends State<EventPage> {
                     widget.event.description.isNotEmpty
                         ? widget.event.description
                         : 'No description provided.',
-                    style: textTheme.bodyMedium?.copyWith(height: 1.5),
+                    style: textTheme.bodyMedium?.copyWith(
+                      height: 1.6,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
 
                   const SizedBox(height: 80),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _infoRow(IconData icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: AppColours.primary),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(text, style: const TextStyle(fontSize: 14)),
           ),
         ],
       ),
     );
   }
 
-  Widget _imageFallback() {
+  Widget _infoRow(BuildContext context, IconData icon, String text) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: colorScheme.primary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _imageFallback(ColorScheme colorScheme) {
     return Container(
-      color: Colors.grey[200],
-      child: const Center(
-        child: Icon(Icons.event, size: 60, color: Colors.grey),
+      color: colorScheme.surfaceContainerHighest,
+      child: Center(
+        child: Icon(Icons.event, size: 80, color: colorScheme.onSurfaceVariant),
       ),
     );
   }
 }
- 

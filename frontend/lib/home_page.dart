@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/user_service.dart';
-import 'package:frontend/theme/app_colours.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'pages/landing.dart';
 import 'pages/calendar.dart';
@@ -26,6 +25,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
 
     // if not logged in, show login page as the first screen
     if (userService == null) {
@@ -37,9 +37,8 @@ class _HomePageState extends State<HomePage> {
           });
         },
       );
-
     }
-  
+
     // only shown after the user logs in
     final List<Widget> pages = [
       LandingPage(userService: userService!),
@@ -48,25 +47,37 @@ class _HomePageState extends State<HomePage> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        toolbarHeight: 5,
-      ),
+      appBar: AppBar(centerTitle: true, toolbarHeight: 5),
       body: pages[_selectedIndex],
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        child: GNav(
-          color: AppColours.primary,
-          activeColor: AppColours.primary,
-          tabBackgroundColor: AppColours.primary.withValues(alpha: 0.1),
-          padding: const EdgeInsets.all(16),
-          gap: 8,
-          onTabChange: _navigateBottomBar,
-          tabs: const [
-            GButton(icon: Icons.home, text: 'Home'),
-            GButton(icon: Icons.calendar_month, text: 'Calendar'),
-            GButton(icon: Icons.settings, text: 'Settings'),
+      bottomNavigationBar: Container(
+        margin: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: GNav(
+            color: colorScheme.onSurfaceVariant,
+            activeColor: colorScheme.primary,
+            tabBackgroundColor: colorScheme.primary.withValues(alpha: 0.1),
+            padding: const EdgeInsets.all(14),
+            gap: 8,
+            duration: const Duration(milliseconds: 300),
+            onTabChange: _navigateBottomBar,
+            tabs: const [
+              GButton(icon: Icons.home_rounded, text: 'Home'),
+              GButton(icon: Icons.calendar_month_rounded, text: 'Calendar'),
+              GButton(icon: Icons.settings_rounded, text: 'Settings'),
+            ],
+          ),
         ),
       ),
     );
