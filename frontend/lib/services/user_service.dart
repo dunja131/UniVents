@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:http/http.dart' as http;
 
+//UserService updated to now handle both users and organisers 
+
 class UserService {
   static const String _baseUrl =
       'http://localhost:8080'; //'http://10.0.2.2:8080';
@@ -33,12 +35,28 @@ class UserService {
     throw Exception('Failed to load users (${response.statusCode})');
   }
 
-  Future<User> login() async {
+
+
+  Future<User> login({bool isOrganiser = false}) async {
+
+//now the url branches according to who is logging in
+    final loginUrl = isOrganiser
+      ? '$_baseUrl/organisers/login'
+      : '$_baseUrl/api/auth/login';
+
+      final loginBody = isOrganiser
+      ? jsonEncode({'organiserEmail': _email, 'organiserPassword': _password})
+      : jsonEncode({'email': _email, 'password': _password});
+
+    
     final tokenResponse = await http.post(
-      Uri.parse('$_baseUrl/api/auth/login'),
+      Uri.parse(loginUrl),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': _email, 'password': _password}),
+      body: loginBody,
     );
+
+    debugPrint('Login status: ${tokenResponse.statusCode}');
+debugPrint('Login body: ${tokenResponse.body}');
 
     if (tokenResponse.statusCode != 200) {
       throw Exception('Failed to login (${tokenResponse.statusCode})');
@@ -47,14 +65,15 @@ class UserService {
     //this reads the token and role received by backend when attempting to login
     final body = jsonDecode(tokenResponse.body);
     _token = body['token'];
-    final role = body['role'];
+
+    final profileUrl = isOrganiser
+      ? '$_baseUrl/organisers/my-profile'
+      : '$_baseUrl/users/my-profile';
+
 
     //this determines whether the person logging in is considered organiser otherwise general user
     // and calls the correct profile endpoint based on the role
-    final profileUrl = role == 'ROLE_ORGANISER'
-        ? '$_baseUrl/organisers/my-profile'
-        : '$_baseUrl/users/my-profile';
-
+  
     // then it fetches the user profile based on the role and token allocated to it
     //lets spring security know who is making the request
     final profileResponse = await http.get(

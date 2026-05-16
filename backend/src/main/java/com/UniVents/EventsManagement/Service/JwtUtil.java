@@ -14,14 +14,15 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
-    public String generateToken(String email) {
-        return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRY_MS))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
+    public String generateToken(String email, String role) {
+    return Jwts.builder()
+            .setSubject(email)
+            .claim("role", role)   //adds the role into the token for organiser! 
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + EXPIRY_MS))
+            .signWith(getKey(), SignatureAlgorithm.HS256)
+            .compact();
+}
 
     public String extractEmail(String token) {
         return Jwts.parserBuilder()

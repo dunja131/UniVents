@@ -67,6 +67,7 @@ public LocalDateTime getCreatedAt() {return createdAt;}
 public Organiser getOrganiser() {return organiser;}
 public Long getOrganiserId() {return organiser != null ? organiser.getOrganiserId() : null;}
 public String getCategory() { return category; }
+public List<Rsvp> getRsvps() { return rsvps; }
 
 
 public void setEventName(String eventName) {this.eventName = eventName;}
@@ -77,6 +78,7 @@ public void setStartTime(LocalDateTime startTime) {this.startTime = startTime;}
 public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
 public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 public void setCategory(String category) { this.category = category; }
+public void setOrganiser(Organiser organiser) { this.organiser = organiser; }
 
 
 }

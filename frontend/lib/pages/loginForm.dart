@@ -35,7 +35,7 @@ class LoginFormState extends State<LoginForm> {
         _emailController.text,
         _passwordController.text,
       );
-      final User user = await _userService.login();
+      final User user = await _userService.login(isOrganiser: widget.isOrganiser); //handles both organiser and user now
 
       widget.onLogin?.call(_userService);
 
