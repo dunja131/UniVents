@@ -36,7 +36,6 @@ class UserService {
   }
 
 
-
   Future<User> login({bool isOrganiser = false}) async {
 
 //now the url branches according to who is logging in
@@ -91,6 +90,13 @@ debugPrint('Login body: ${tokenResponse.body}');
     throw Exception('Failed to fetch profile (${profileResponse.statusCode})');
   }
 
+  
+  void logout() {
+  _token = null;
+  _currentUser = null;
+}
+
+
   // Needs {id} in url
   Future<User> deleteUser(String userId) async {
     final response = await http.delete(
@@ -121,4 +127,5 @@ debugPrint('Login body: ${tokenResponse.body}');
       throw Exception('Failed to create user (${response.statusCode})');
     }
   }
+
 }

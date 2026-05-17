@@ -2,141 +2,128 @@ import 'package:flutter/material.dart';
 import 'package:frontend/services/user_service.dart';
 import 'package:frontend/home_page.dart';
 import 'package:settings_ui/settings_ui.dart';
-
+ 
 class SettingsPage extends StatefulWidget {
   final UserService userService;
   const SettingsPage({super.key, required this.userService});
-
+ 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
-
+ 
 class _SettingsPageState extends State<SettingsPage> {
-
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
     final user = widget.userService.currentUser;
-
+ 
     if (user == null) {
       return const Scaffold(body: Center(child: Text('No user logged in')));
     }
-
-   
-
-return Scaffold(
-  backgroundColor: colorScheme.surface,
-  body: SettingsList(
-    sections: [
-      // profile header
-      CustomSettingsSection(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              CircleAvatar(
-                radius: 40,
-                backgroundColor: colorScheme.primaryContainer,
-                child: Text(
-                  user.firstName[0].toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
+ 
+    return Scaffold(
+      backgroundColor: cs.surface,
+      body: Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16),
+  child: SettingsList(
+        // ── Match background to theme surface ──
+        lightTheme: SettingsThemeData(
+          settingsListBackground: cs.surface,
+          settingsSectionBackground: cs.surface,
+          dividerColor: cs.outlineVariant,
+          titleTextColor: cs.onSurfaceVariant,
+          leadingIconsColor: cs.onSurfaceVariant,
+          tileDescriptionTextColor: cs.onSurfaceVariant,
+          settingsTileTextColor: cs.onSurface,
+        ),
+        sections: [
+          // ── Profile header ──
+          CustomSettingsSection(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 32, 0, 24),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundColor: cs.surfaceContainerHighest,
+                      child: Text(
+                        user.firstName[0].toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${user.firstName} ${user.lastName}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                '${user.firstName} ${user.lastName}',
-                style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+  
+          // ── Account section ──
+          SettingsSection(
+            title: const Text('Account'),
+            tiles: [
+              SettingsTile(
+                leading: const Icon(Icons.person_outline_rounded),
+                title: const Text('First Name'),
+                value: Text(user.firstName),
               ),
-              const SizedBox(height: 24),
+              SettingsTile(
+                leading: const Icon(Icons.person_outline_rounded),
+                title: const Text('Last Name'),
+                value: Text(user.lastName),
+              ),
+              SettingsTile(
+                leading: const Icon(Icons.email_outlined),
+                title: const Text('Email'),
+                value: Text(user.email),
+              ),
             ],
           ),
-        ),
-      ),
-
-      // account section
-      SettingsSection(
-        title: const Text('Account'),
-        tiles: [
-          SettingsTile(
-            leading: const Icon(Icons.person_outline),
-            title: const Text('First Name'),
-            value: Text(user.firstName),
-          ),
-          SettingsTile(
-            leading: const Icon(Icons.person_outline),
-            title: const Text('Last Name'),
-            value: Text(user.lastName),
-          ),
-          SettingsTile(
-            leading: const Icon(Icons.email_outlined),
-            title: const Text('Email'),
-            value: Text(user.email),
-          ),
-          SettingsTile(
-            leading: Icon(Icons.logout, color: colorScheme.error),
-            title: Text('Log Out', style: TextStyle(color: colorScheme.error)),
-            onPressed: (context) => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            ),
-          ),
-         ],  // ← closes tiles list
-      ),    // ← closes SettingsSection
-    ],      // ← closes sections list
-  ),        // ← closes SettingsList
-);
-  }
-//       // danger zone
-//       SettingsSection(
-//         title: Text('Danger Zone', style: TextStyle(color: colorScheme.error)),
-//         tiles: [
-//           SettingsTile(
-//             leading: Icon(Icons.delete_outline, color: colorScheme.error),
-//             title: Text('Delete Account', style: TextStyle(color: colorScheme.error)),
-//             onPressed: (context) => _confirmDelete(context),
-//           ),
-//         ],
-//       ),
-//     ],
-//   ),
-// );
-  
-  Widget _settingsRow(BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: colorScheme.primary),
-          const SizedBox(width: 12),
-          Text(
-            label,
-            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 14),
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: TextStyle(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
+ 
+          // ── Log out section ──
+          SettingsSection(
+            tiles: [
+              SettingsTile(
+                leading: Icon(Icons.logout_rounded, color: cs.error),
+                title: Text(
+                  'Log Out',
+                  style: TextStyle(
+                    color: cs.error,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                onPressed: (context) {
+                  widget.userService.logout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomePage()),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),
+    ),
     );
   }
-
-  void _confirmDelete(BuildContext context) {
+ 
+  void confirmDelete(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -152,13 +139,13 @@ return Scaffold(
               Navigator.pop(context);
               _deleteUser(widget.userService.userId ?? '');
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text('Delete', style: TextStyle(color: cs.error)),
           ),
         ],
       ),
     );
   }
-
+ 
   Future<void> _deleteUser(String userId) async {
     try {
       await widget.userService.deleteUser(userId);

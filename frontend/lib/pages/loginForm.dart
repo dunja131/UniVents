@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:frontend/services/user_service.dart';
+import 'package:frontend/pages/OrganiserDashboardScreen.dart';
 
 class LoginForm extends StatefulWidget {
   final void Function(UserService)? onLogin;
   final bool isOrganiser;
 
-  const LoginForm(
-    {super.key, 
-    this.onLogin,
-    this.isOrganiser = false,
-    });
+  const LoginForm({super.key, this.onLogin, this.isOrganiser = false});
 
   @override
   LoginFormState createState() {
@@ -25,37 +22,48 @@ class LoginFormState extends State<LoginForm> {
   bool _isLoading = false;
   List<User>? users;
 
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
+ Future<void> _submit() async {
+  if (!_formKey.currentState!.validate()) return;
+  setState(() => _isLoading = true);
 
-    setState(() => _isLoading = true);
+  try {
+    final UserService _userService = UserService(
+      _emailController.text,
+      _passwordController.text,
+    );
+    final User user = await _userService.login(isOrganiser: widget.isOrganiser);
 
-    try {
-      final UserService _userService = UserService(
-        _emailController.text,
-        _passwordController.text,
+    if (!mounted) return;
+
+    if (widget.isOrganiser) {
+      // navigate the organiser to their to dashboard
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OrganiserDashboardScreen(userService: _userService),
+        ),
       );
-      final User user = await _userService.login(isOrganiser: widget.isOrganiser); //handles both organiser and user now
-
+    } else {
+      // student continues with the existing flow
       widget.onLogin?.call(_userService);
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Welcome, ${user.firstName}!')));
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Login failed: $e')));
-    } finally {
-      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Welcome, ${user.firstName}!')),
+      );
     }
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Login failed: $e')),
+    );
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
   }
 
-   @override
-  Widget build(BuildContext context) {
+ }
 
-     final colorScheme = Theme.of(context).colorScheme;
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Form(
       key: _formKey,
       child: Column(
@@ -98,7 +106,10 @@ class LoginFormState extends State<LoginForm> {
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+                borderSide: const BorderSide(
+                  color: Colors.redAccent,
+                  width: 1.5,
+                ),
               ),
             ),
             validator: (value) {
@@ -146,7 +157,10 @@ class LoginFormState extends State<LoginForm> {
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+                borderSide: const BorderSide(
+                  color: Colors.redAccent,
+                  width: 1.5,
+                ),
               ),
             ),
             validator: (value) {

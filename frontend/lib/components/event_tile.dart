@@ -3,7 +3,6 @@ import 'package:frontend/pages/event.dart';
 import 'package:frontend/services/rsvp_service.dart';
 import 'package:frontend/models/event_model.dart';
 import 'package:frontend/services/user_service.dart';
-import 'package:frontend/theme/app_colours.dart';
 
 class EventTile extends StatefulWidget {
   final Event event;
@@ -110,7 +109,7 @@ class _EventTileState extends State<EventTile> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -169,7 +168,7 @@ class _EventTileState extends State<EventTile> {
                         Text(
                           month,
                           style: TextStyle(
-                            color: AppColours.primary,
+                            color: Theme.of(context).colorScheme.primary,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                           ),
@@ -177,7 +176,7 @@ class _EventTileState extends State<EventTile> {
                         Text(
                           day,
                           style: TextStyle(
-                            color: AppColours.primary,
+                            color: Theme.of(context).colorScheme.primary,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             height: 1.1,
@@ -200,7 +199,7 @@ class _EventTileState extends State<EventTile> {
                     widget.event.title,
                     style: textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColours.primary,
+                    color: Theme.of(context).colorScheme.primary,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

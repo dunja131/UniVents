@@ -1,7 +1,7 @@
 package com.UniVents.EventsManagement.entity;
 
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,10 +16,12 @@ private Long rsvpId;
 
 @ManyToOne //many RSVPs belong to One User
 @JoinColumn(name = "user_id", nullable=false)
+@JsonBackReference("user-rsvps") 
 private User user;
 
 @ManyToOne //many RSVPs belong to One Event
 @JoinColumn(name = "event_id", nullable = false)
+@JsonBackReference("event-rsvps")
 private Event event;
 
 @Column(name = "status", nullable = false)

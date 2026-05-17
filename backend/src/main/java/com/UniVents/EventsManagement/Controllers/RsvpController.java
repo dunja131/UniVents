@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
 
 @RestController  // tells Spring this class handles HTTP requests
 @RequestMapping("/api/rsvps") //changed to /api/rsvps
@@ -22,10 +23,10 @@ public class RsvpController{
 
     // POST /rsvps - create RSVP
     @PostMapping
-    public ResponseEntity<Rsvp> createRsvp(@RequestBody Rsvp rsvp) {
-        Rsvp saved = rsvpRepository.save(rsvp);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-    }
+    public ResponseEntity<Void> createRsvp(@RequestBody Rsvp rsvp) {
+    rsvpRepository.save(rsvp);
+    return ResponseEntity.status(HttpStatus.CREATED).build(); 
+}
     //GET /rsvps/event/{eventId} - get all RSVPs for an event
     @GetMapping("/event/{eventId}")
     public List<Rsvp> getRsvpsByEvent(@PathVariable Long eventId){
@@ -34,9 +35,20 @@ public class RsvpController{
 
     // GET /rsvps/user/{userId} - get all RSVPs for a user
     @GetMapping("/user/{userId}")
-    public List<Rsvp> getRsvpsByUser(@PathVariable Long userId){
-        return rsvpRepository.findByUser_UserId(userId);
-    }
+public ResponseEntity<List<Map<String, Object>>> getRsvpsByUser(@PathVariable Long userId) {
+    List<Rsvp> rsvps = rsvpRepository.findByUser_UserId(userId);
+    
+
+    List<Map<String, Object>> result = rsvps.stream().map(r -> {
+        Map<String, Object> map = new java.util.HashMap<>();
+        map.put("rsvpId", r.getRsvpId());
+        map.put("status", r.getStatus());
+        map.put("event", Map.of("eventId", r.getEvent().getEventId()));
+        return map;
+    }).toList();
+    
+    return ResponseEntity.ok(result);
+}
 
     // PUT - update RSVPs going, maybe, not going
     // PUT /rsvps/{id} - update RSVP status

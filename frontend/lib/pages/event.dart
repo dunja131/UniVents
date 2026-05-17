@@ -3,6 +3,83 @@ import 'package:frontend/models/event_model.dart';
 import 'package:frontend/services/rsvp_service.dart';
 import 'package:frontend/services/user_service.dart';
 
+// ── Top-level helpers ──
+
+String _weekdayFull(int w) => [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+][w - 1];
+
+String _monthFull(int m) => [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+][m - 1];
+
+IconData _categoryIcon(String? cat) {
+  switch (cat?.toLowerCase()) {
+    case 'sports':
+      return Icons.sports_basketball_rounded;
+    case 'music':
+      return Icons.music_note_rounded;
+    case 'academic':
+      return Icons.school_rounded;
+    case 'tech':
+      return Icons.computer_rounded;
+    case 'arts':
+      return Icons.palette_rounded;
+    case 'social':
+      return Icons.people_rounded;
+    case 'health':
+      return Icons.favorite_rounded;
+    case 'career':
+      return Icons.work_rounded;
+    default:
+      return Icons.event_rounded;
+  }
+}
+
+Map<String, Color> _categoryColors(String? category) {
+  switch (category?.toLowerCase()) {
+    case 'sports':
+      return {'bg': const Color(0xFFFFF3E0), 'text': const Color(0xFFE65100)};
+    case 'social':
+      return {'bg': const Color(0xFFF3E5F5), 'text': const Color(0xFF6A1B9A)};
+    case 'academic':
+      return {'bg': const Color(0xFFE3F2FD), 'text': const Color(0xFF1565C0)};
+    case 'music':
+      return {'bg': const Color(0xFFFCE4EC), 'text': const Color(0xFFC62828)};
+    case 'tech':
+      return {'bg': const Color(0xFFE8F5E9), 'text': const Color(0xFF2E7D32)};
+    case 'arts':
+      return {'bg': const Color(0xFFFFF8E1), 'text': const Color(0xFFF57F17)};
+    case 'health':
+      return {'bg': const Color(0xFFE0F2F1), 'text': const Color(0xFF00695C)};
+    case 'career':
+      return {'bg': const Color(0xFFEDE7F6), 'text': const Color(0xFF4527A0)};
+    default:
+      return {'bg': const Color(0xFFF5F5F5), 'text': const Color(0xFF616161)};
+  }
+}
+
+// ─────────────────────────────────────────────
+// Event Page
+// ─────────────────────────────────────────────
+
 class EventPage extends StatefulWidget {
   final Event event;
   final UserService userService;
@@ -40,148 +117,246 @@ class _EventPageState extends State<EventPage> {
         await _createRsvp();
       }
     } catch (e) {
-      _showSnackBar("Failed: $e");
+      _showSnackBar('Failed: $e');
     }
   }
 
   Future<void> _createRsvp() async {
-    await _rsvpService.createRsvp(eventId: widget.event.eventId, status: "GOING");
+    await _rsvpService.createRsvp(
+      eventId: widget.event.eventId,
+      status: 'GOING',
+    );
     setState(() => _hasRsvped = true);
-    _showSnackBar("RSVP successful!");
+    _showSnackBar('RSVP successful!');
   }
 
   Future<void> _removeRsvp() async {
-    final int? rsvpId = await _rsvpService.getRsvpId(eventId: widget.event.eventId);
+    final int? rsvpId = await _rsvpService.getRsvpId(
+      eventId: widget.event.eventId,
+    );
     if (rsvpId != null) {
       await _rsvpService.deleteRsvp(rsvpId: rsvpId);
       setState(() => _hasRsvped = false);
-      _showSnackBar("RSVP removed!");
+      _showSnackBar('RSVP removed!');
     }
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
 
+    // ── Formatted strings ──
     final formattedDate =
-        "${widget.event.startTime.day}/${widget.event.startTime.month}/${widget.event.startTime.year}";
+        '${_weekdayFull(widget.event.startTime.weekday)}, ${_monthFull(widget.event.startTime.month)} ${widget.event.startTime.day}, ${widget.event.startTime.year}';
     final formattedTime =
-        "${widget.event.startTime.hour.toString().padLeft(2, '0')}:${widget.event.startTime.minute.toString().padLeft(2, '0')}";
+        '${widget.event.startTime.hour.toString().padLeft(2, '0')}:${widget.event.startTime.minute.toString().padLeft(2, '0')}';
     final formattedEnd =
-        "${widget.event.endTime.hour.toString().padLeft(2, '0')}:${widget.event.endTime.minute.toString().padLeft(2, '0')}";
+        '${widget.event.endTime.hour.toString().padLeft(2, '0')}:${widget.event.endTime.minute.toString().padLeft(2, '0')}';
+    final isFree = widget.event.price == 0.0 || widget.event.price == 0;
+    final catColors = _categoryColors(widget.event.category);
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: cs.surface,
 
-      // ── RSVP button ──
+      // ── RSVP button fixed at bottom ──
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         child: ElevatedButton(
           onPressed: _onRsvpPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: _hasRsvped
-                ? colorScheme.errorContainer
-                : colorScheme.primary,
-            foregroundColor: _hasRsvped
-                ? colorScheme.onErrorContainer
-                : colorScheme.onPrimary,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            backgroundColor: _hasRsvped ? cs.errorContainer : cs.primary,
+            foregroundColor: _hasRsvped ? cs.onErrorContainer : cs.onPrimary,
+            minimumSize: const Size.fromHeight(52),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
+            elevation: 0,
           ),
           child: Text(
-            _hasRsvped ? 'Cancel RSVP' : 'RSVP to this event',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            _hasRsvped ? 'Cancel RSVP' : 'RSVP Now',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ),
       ),
 
       body: CustomScrollView(
         slivers: [
-          // ── Collapsing app bar with image ──
+          // back button and image
           SliverAppBar(
-            expandedHeight: 280,
             pinned: true,
-            backgroundColor: colorScheme.primary,
-            iconTheme: IconThemeData(color: colorScheme.onPrimary),
-            flexibleSpace: FlexibleSpaceBar(
-              // title: Text(
-              //   widget.event.title,
-              //   style: TextStyle(
-              //     color: colorScheme.onPrimary,
-              //     fontWeight: FontWeight.bold,
-              //     fontSize: 16,
-              //   ),
-              // ),
-              
-              background: widget.event.imagePath.isNotEmpty
-                  ? Image.asset(
-                      widget.event.imagePath,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _imageFallback(colorScheme),
-                    )
-                  : _imageFallback(colorScheme),
+            backgroundColor: cs.surface,
+            surfaceTintColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            leading: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(width: 8),
+                  Icon(Icons.arrow_back_rounded, size: 16, color: cs.onSurface),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Back',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: cs.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            leadingWidth: 90,
+          ),
+          // Small contained image
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: SizedBox(
+                  height: 200,
+                  width: double.infinity,
+                  child: widget.event.imagePath.isNotEmpty
+                      ? Image.asset(
+                          widget.event.imagePath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: cs.primaryContainer,
+                            child: Center(
+                              child: Icon(
+                                _categoryIcon(widget.event.category),
+                                size: 64,
+                                color: cs.onPrimaryContainer.withOpacity(0.3),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          color: cs.primaryContainer,
+                          child: Center(
+                            child: Icon(
+                              _categoryIcon(widget.event.category),
+                              size: 64,
+                              color: cs.onPrimaryContainer.withOpacity(0.3),
+                            ),
+                          ),
+                        ),
+                ),
+              ),
             ),
           ),
 
           // ── Content ──
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  // category chip
-                  if (widget.event.category != null) ...[
-                    Chip(
-                      label: Text(widget.event.category!),
-                      backgroundColor: colorScheme.primaryContainer,
-                      labelStyle: TextStyle(
-                        color: colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.w600,
+                  // ── Title + category pill ──
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.event.title,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: cs.onSurface,
+                            height: 1.2,
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-
-                  // title
-                  Text(
-                    widget.event.title,
-                    style: textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                    ),
+                      if (widget.event.category != null) ...[
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: catColors['bg'],
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: catColors['text']!.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Text(
+                            widget.event.category!,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: catColors['text'],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
 
                   const SizedBox(height: 20),
 
-                  // ── Info card ──
+                  // ── Info rows ──
+                  _InfoRow(
+                    icon: Icons.calendar_today_rounded,
+                    text: formattedDate,
+                    cs: cs,
+                  ),
+                  _InfoRow(
+                    icon: Icons.access_time_rounded,
+                    text: '$formattedTime – $formattedEnd',
+                    cs: cs,
+                  ),
+                  _InfoRow(
+                    icon: Icons.location_on_rounded,
+                    text: widget.event.location,
+                    cs: cs,
+                  ),
+
+                  // if (widget.event.organiserName != null)
+                  //   _InfoRow(
+                  //     icon: Icons.person_outline_rounded,
+                  //     text: 'Organised by',
+                  //     boldSuffix: widget.event.organiserName!,
+                  //     cs: cs,
+                  //   ), --commenting this out atm to decide if we want the organiser name in the event detail
+                  const SizedBox(height: 20),
+
+                  Divider(color: cs.outlineVariant),
+
+                  const SizedBox(height: 20),
+
+                  // ── Price badge ──
                   Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerLow,
-                      borderRadius: BorderRadius.circular(16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
                     ),
-                    child: Column(
-                      children: [
-                        _infoRow(context, Icons.calendar_today, formattedDate),
-                        _infoRow(context, Icons.access_time, "$formattedTime – $formattedEnd"),
-                        _infoRow(context, Icons.location_on, widget.event.location),
-                        _infoRow(
-                          context,
-                          Icons.attach_money,
-                          widget.event.price == 0.0
-                              ? 'Free'
-                              : widget.event.price.toStringAsFixed(2),
-                        ),
-                      ],
+                    decoration: BoxDecoration(
+                      color: isFree
+                          ? cs.primaryContainer
+                          : const Color(0xFFFFF3CD),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      isFree
+                          ? 'Free entry'
+                          : '\$${widget.event.price.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: isFree
+                            ? cs.onPrimaryContainer
+                            : const Color(0xFF856404),
+                      ),
                     ),
                   ),
 
@@ -190,23 +365,23 @@ class _EventPageState extends State<EventPage> {
                   // ── About section ──
                   Text(
                     'About this event',
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   Text(
                     widget.event.description.isNotEmpty
                         ? widget.event.description
                         : 'No description provided.',
-                    style: textTheme.bodyMedium?.copyWith(
+                    style: TextStyle(
+                      fontSize: 14,
                       height: 1.6,
-                      color: colorScheme.onSurfaceVariant,
+                      color: cs.onSurfaceVariant,
                     ),
                   ),
-
-                  const SizedBox(height: 80),
                 ],
               ),
             ),
@@ -215,31 +390,60 @@ class _EventPageState extends State<EventPage> {
       ),
     );
   }
+}
 
-  Widget _infoRow(BuildContext context, IconData icon, String text) {
-    final colorScheme = Theme.of(context).colorScheme;
+// ─────────────────────────────────────────────
+// Reusable info row
+// ─────────────────────────────────────────────
+
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final String? boldSuffix;
+  final ColorScheme cs;
+
+  const _InfoRow({
+    required this.icon,
+    required this.text,
+    required this.cs,
+    this.boldSuffix,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 7),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: colorScheme.primary),
-          const SizedBox(width: 12),
+          Icon(icon, size: 16, color: cs.onSurfaceVariant),
+          const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
-            ),
+            child: boldSuffix != null
+                ? RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: cs.onSurfaceVariant,
+                      ),
+                      children: [
+                        TextSpan(text: '$text '),
+                        TextSpan(
+                          text: boldSuffix,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: cs.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Text(
+                    text,
+                    style: TextStyle(fontSize: 14, color: cs.onSurfaceVariant),
+                  ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _imageFallback(ColorScheme colorScheme) {
-    return Container(
-      color: colorScheme.surfaceContainerHighest,
-      child: Center(
-        child: Icon(Icons.event, size: 80, color: colorScheme.onSurfaceVariant),
       ),
     );
   }
