@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:frontend/services/user_service.dart';
 import 'package:frontend/pages/OrganiserDashboardScreen.dart';
+import 'package:frontend/home_page.dart';
 
 class LoginForm extends StatefulWidget {
   final void Function(UserService)? onLogin;
@@ -22,44 +23,54 @@ class LoginFormState extends State<LoginForm> {
   bool _isLoading = false;
   List<User>? users;
 
- Future<void> _submit() async {
-  if (!_formKey.currentState!.validate()) return;
-  setState(() => _isLoading = true);
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _isLoading = true);
 
-  try {
-    final UserService _userService = UserService(
-      _emailController.text,
-      _passwordController.text,
-    );
-    final User user = await _userService.login(isOrganiser: widget.isOrganiser);
+    bool loginSucceeded = false;
 
-    if (!mounted) return;
+    try {
+      final UserService _userService = UserService(
+        _emailController.text,
+        _passwordController.text,
+      );
+      final User user = await _userService.login(
+        isOrganiser: widget.isOrganiser,
+      );
 
-    if (widget.isOrganiser) {
-      // navigate the organiser to their to dashboard
-      Navigator.pushReplacement(
+      loginSucceeded = true;
+
+      if (!mounted) return;
+
+      if (widget.isOrganiser) {
+        // navigate the organiser to their to dashboard
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OrganiserDashboardScreen(userService: _userService),
+          ),
+        );
+      } else {
+        // student continues with the existing flow
+        if (!mounted) return;
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => HomePage(initialUserService: _userService),
+          ),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (loginSucceeded) return;
+      if (!mounted) return;
+      ScaffoldMessenger.of(
         context,
-        MaterialPageRoute(
-          builder: (_) => OrganiserDashboardScreen(userService: _userService),
-        ),
-      );
-    } else {
-      // student continues with the existing flow
-      widget.onLogin?.call(_userService);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Welcome, ${user.firstName}!')),
-      );
+      ).showSnackBar(SnackBar(content: Text('Login failed: $e')));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-  } catch (e) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login failed: $e')),
-    );
-  } finally {
-    if (mounted) setState(() => _isLoading = false);
   }
-
- }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +95,7 @@ class LoginFormState extends State<LoginForm> {
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
-              hintText: 'you@student.otago.ac.nz',
+              hintText: 'you@email.com',
               hintStyle: TextStyle(color: Colors.grey.shade400),
               filled: true,
               fillColor: Colors.white,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
+import 'package:frontend/pages/welcomePage.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -66,10 +68,12 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFFFBFBFB),
         useMaterial3: true,
+        textTheme: GoogleFonts.dmSansTextTheme(),
       ),
 
+
       themeMode: ThemeMode.light,
-      home: HomePage(),
+      home: const WelcomePage(),
     );
   }
 }

@@ -128,4 +128,23 @@ debugPrint('Login body: ${tokenResponse.body}');
     }
   }
 
+  Future<void> createOrganiser(
+    String firstName, String lastName, String email, String password) async {
+  final uri = Uri.parse('$_baseUrl/organisers/register').replace(
+    queryParameters: {
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'password': password,
+    },
+  );
+  final response = await http.post(uri);
+  if (response.statusCode == 409) {
+    throw Exception('An account with that email already exists');
+  }
+  if (response.statusCode != 201) {
+    throw Exception('Failed to register organiser (${response.statusCode})');
+  }
+}
+
 }

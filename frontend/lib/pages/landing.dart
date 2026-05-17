@@ -3,6 +3,7 @@ import 'package:frontend/models/event_model.dart';
 import 'package:frontend/services/event_service.dart';
 import 'package:frontend/services/user_service.dart';
 import 'package:frontend/pages/event.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LandingPage extends StatefulWidget {
   final UserService userService;
@@ -93,8 +94,8 @@ class _LandingPageState extends State<LandingPage> {
             children: [
               Text(
                 'Discover Events',
-                style: TextStyle(
-                  fontSize: 24,
+                style: GoogleFonts.outfit(
+                  fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: colorScheme.onSurface,
                 ),

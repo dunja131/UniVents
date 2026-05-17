@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:frontend/services/user_service.dart';
+import 'package:frontend/home_page.dart';
+import 'package:frontend/pages/OrganiserDashboardScreen.dart';
+
 
 class SignUpForm extends StatefulWidget {
   final void Function(UserService)? onLogin;
   final bool isOrganiser;
 
-  const SignUpForm({
-    super.key,
-    this.onLogin,
-    this.isOrganiser = false,
-  });
+  const SignUpForm({super.key, this.onLogin, this.isOrganiser = false});
 
   @override
   SignUpFormState createState() => SignUpFormState();
@@ -35,12 +34,29 @@ class SignUpFormState extends State<SignUpForm> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
+ Future<void> _submit() async {
+  if (!_formKey.currentState!.validate()) return;
+  setState(() => _isLoading = true);
 
-    setState(() => _isLoading = true);
+  bool loginSucceeded = false;
 
-    try {
+  try {
+    final userService = UserService(
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    if (widget.isOrganiser) {
+      // ── Organiser registration ──
+      await userService.createOrganiser(
+        _firstNameController.text,
+        _lastNameController.text,
+        _emailController.text,
+        _passwordController.text,
+      );
+       debugPrint('Organiser registered');
+    } else {
+      // ── Student registration ──
       final user = User(
         userId: '',
         firstName: _firstNameController.text,
@@ -48,34 +64,56 @@ class SignUpFormState extends State<SignUpForm> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-
-      final userService = UserService(
-        _emailController.text,
-        _passwordController.text,
-      );
       await userService.createUser(user);
-      await userService.login();
-
-      widget.onLogin?.call(userService);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created')),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sign up failed: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+      debugPrint('Student registered');
     }
-  }
 
+    // ── Login after registration ──
+    await userService.login(isOrganiser: widget.isOrganiser);
+    debugPrint('Login complete token: ${userService.authHeader}');
+
+    loginSucceeded = true;
+
+    final isOrganiser = widget.isOrganiser;
+    final onLogin = widget.onLogin;
+
+
+    if (!mounted) return;
+    debugPrint('Navigating... isOrganiser: ${widget.isOrganiser}');
+
+    if (widget.isOrganiser) {
+      // organiser goes to dashboard
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              OrganiserDashboardScreen(userService: userService),
+        ),
+        (route) => false,
+      );
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomePage(initialUserService: userService),
+        ),
+        (route) => false,
+      );
+    }
+  } catch (e) {
+    if (loginSucceeded) return;
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Sign up failed: $e')),
+    );
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
+  }
+}
   // reusable field builder to avoid repeating decoration code
   Widget _buildField({
+
+    
     required String label,
     required String hint,
     required TextEditingController controller,
@@ -132,6 +170,7 @@ class SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Form(
       key: _formKey,
       child: Column(
@@ -143,7 +182,8 @@ class SignUpFormState extends State<SignUpForm> {
             hint: 'Jane',
             controller: _firstNameController,
             validator: (value) {
-              if (value == null || value.isEmpty) return 'First name is required';
+              if (value == null || value.isEmpty)
+                return 'First name is required';
               return null;
             },
           ),
@@ -156,7 +196,8 @@ class SignUpFormState extends State<SignUpForm> {
             hint: 'Smith',
             controller: _lastNameController,
             validator: (value) {
-              if (value == null || value.isEmpty) return 'Last name is required';
+              if (value == null || value.isEmpty)
+                return 'Last name is required';
               return null;
             },
           ),
@@ -166,7 +207,7 @@ class SignUpFormState extends State<SignUpForm> {
           // EMAIL
           _buildField(
             label: 'EMAIL',
-            hint: 'you@student.otago.ac.nz',
+            hint: 'you@email.com',
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
@@ -185,7 +226,8 @@ class SignUpFormState extends State<SignUpForm> {
             controller: _passwordController,
             validator: (value) {
               if (value == null || value.isEmpty) return 'Password is required';
-              if (value.length < 6) return 'Password must be at least 6 characters';
+              if (value.length < 6)
+                return 'Password must be at least 6 characters';
               return null;
             },
           ),
@@ -198,8 +240,10 @@ class SignUpFormState extends State<SignUpForm> {
             hint: '••••••••',
             controller: _confirmPasswordController,
             validator: (value) {
-              if (value == null || value.isEmpty) return 'Please confirm your password';
-              if (value != _passwordController.text) return 'Passwords do not match';
+              if (value == null || value.isEmpty)
+                return 'Please confirm your password';
+              if (value != _passwordController.text)
+                return 'Passwords do not match';
               return null;
             },
           ),
@@ -212,8 +256,8 @@ class SignUpFormState extends State<SignUpForm> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _submit,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1E2140),
-                foregroundColor: Colors.white,
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
                 padding: const EdgeInsets.symmetric(vertical: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),

@@ -4,10 +4,11 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'pages/landing.dart';
 import 'pages/calendar.dart';
 import 'pages/settings.dart';
-import 'pages/optionPage.dart';
+import 'pages/welcomePage.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final UserService? initialUserService; // ← accept userService
+  const HomePage({super.key, this.initialUserService});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,29 +18,25 @@ class _HomePageState extends State<HomePage> {
   UserService? userService;
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    userService = widget.initialUserService; // ← set from parameter
+  }
+
   void _navigateBottomBar(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    setState(() => _selectedIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    // if not logged in, show login page as the first screen
+    // if not logged in, go back to welcome screen
     if (userService == null) {
-      return OptionPage(
-        onLogin: (service) {
-          setState(() {
-            userService = service;
-            _selectedIndex = 0;
-          });
-        },
-      );
+      return const WelcomePage();
     }
 
-    // only shown after the user logs in
     final List<Widget> pages = [
       LandingPage(userService: userService!),
       CalendarPage(userService: userService!),

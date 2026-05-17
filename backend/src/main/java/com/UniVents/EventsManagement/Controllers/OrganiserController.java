@@ -48,6 +48,7 @@ public class OrganiserController {
         organiser.setOrganiserName(firstName + " " + lastName);
         organiser.setOrganiserEmail(email);
         organiser.setOrganiserPassword(passwordEncoder.encode(password));
+        organiser.setRole("ORGANISER");
 
         Organiser saved = organiserRepository.save(organiser);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
